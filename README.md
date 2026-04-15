@@ -3,9 +3,13 @@ projekt do WEA
 
        
 1.4. - večer jsem začal pracovat na tomhle projektu, zatím jenom bojování s css a trochu rozpracování classy do php
+
 2.4. - celý den jsem pracoval na projektu do WEA, rozpracoval jsem přihlašování a přidal trochu css
+
 3.4. - moc jsem toho neudělal, jenom další bojování s css, přihlašování je funkční ale měl jsem super nápad a hodil všechno na jednu stránku, takže budu muset bojovat s css a dalšími věcmi.
+
 4.4. - další bojování s css, já prohrávám... trochu jsem popřeházel věci, ale budu se muset vrátit k css později. Taky jsem stihl udělat odhlášení.
+
 5.4. - zase další bojování s css, někam se dostávám ale je to hrozně pomalé a radši bych aspoň udělal kostru dnež se vrátím k mučení s css (zas tak velký masochista nejsem). Celý den pracoju na fotkách uživatele, ale nikam to nejde protože to furt blbne divně. Rozhodl jsem se že budu dělat e-shop.
 
 06.04 - I woke up and immediately started working, at least the backend. Css sometime later... Hopefully after I finally make it work.
