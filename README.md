@@ -24,3 +24,4 @@ projekt do WEA
         Last time I added pictures.php and made it all work, today I guess I'm going to expand on that a little bit.
         Zapomněl jsem že děláme fotogalerii, takže můžu zahodit většinu těch věcí co tam jsou. Zatím jenom v php naštěstí.
         Css bude dělat Martin, protože mi vůbec nejde.
+        Spravil jsem funkce v php, takze uz funguje vsechno co tam zatim máme. (až na produkty ale to stejně zahodím)
