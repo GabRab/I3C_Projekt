@@ -1,8 +1,7 @@
 <?php
 /** code placed here:
- * login user function
- * register user function
- * Stmt object (currently only construct, get, set, toString, destruct; bind, exe and fetch)
+ * user functions - login, register, changeImage(not sure if it works)
+ * image functions - addImage, listImages
  */
 class Stmt{
     private $db;
@@ -44,7 +43,7 @@ class Stmt{
         }
     }
     function fetch(){//fetch assoc field of stmt results object
-        return mysqli_fetch_all($this->stmt->get_result(), MYSQLI_ASSOC);
+        return mysqli_fetch_all($this->stmt->get_result(), MYSQLI_ASSOC);//ALERT!!! using mysqli_fetch_all causes an empty array instead of null when getting 0 result rows!!!
     }
 }
 
@@ -60,37 +59,39 @@ function checkImg($image, $filepath="userImages"){
     }
     else echo "<div class='err'> something is wrong <br> error code:".$image["error"]." </div>";
     return $imagePath;
-    
 }
-// USER STUFFS
 
-function login($db, $name, $pass){
-    $controlActual = "1.check <br>";
+?>
+
+
+<?php
+// USER STUFFS
+function login($db, $name, $pass){//WORKS :D
     $stmt = new Stmt($db, "SELECT * FROM users WHERE name= ?");
     $stmt->bind("s", array(&$name));//VALUES MUST BE IN array(&) to WORK
     $stmt->exe();
-    $controlActual.= "2.check <br>";
-    if(($user = $stmt->fetch())==null){
+    echo "first";
+    if(($user = $stmt->fetch())===array()){
         echo "<div class='err'>ucet nenalezen</div>";
         return 0;
     };
-    $controlActual .= "3.check <br>";
-    if(!password_verify($pass, $user["password"])){
+    var_dump($user);
+    if(!password_verify($pass, $user[0]["password"])){
         echo "<div class='err'>heslo je spatne</div>";
         return 0;
     }
-    $controlActual .= "4.check <br>";
-    $_SESSION["user"]=$user;//don't just fetch it again dumbass, a single fetch is enough
+    echo "second";
+    $_SESSION["user"]=$user[0];//don't just fetch it again dumbass, a single fetch is enough
     //redirection is not needed because I managed to put login in the navbar
     //header("Location: ./index.php");
-    echo "<div class='err'>".$controlActual."<br>DONE!</div>";
 }
-function register($db, $name, $pass, $email, $tel){
+function register($db, $name, $pass, $email, $tel){// WORKS although it could get changed to reflect the complexity of a normal fotogallery by losing that $tel
     //make the class and see if account name is already used
     $stmt = new Stmt($db, "SELECT * FROM users WHERE name=?");
     $stmt->bind("s", array(&$name));
     $stmt->exe();
-    if(($user = $stmt->fetch())!==null){
+    if(($user = $stmt->fetch())!==array()){
+        var_dump($user);
         echo "<div class='err'>ucet s timto jmenem uz existuje</div>";
         return 0;
     };
@@ -104,23 +105,54 @@ function register($db, $name, $pass, $email, $tel){
     $stmt->stmt ="SELECT * FROM users WHERE name=?";
     $stmt->bind("s", array(&$name));
     $stmt->exe();
-    $_SESSION["user"]=$stmt->fetch();
+    $_SESSION["user"]=$stmt->fetch()[0];
     echo "<div class='err'>congratulations on creating your account!</div>";
     }
-function changeImage($db, $image){//BROKEN
-
-    if (($imagePath = checkImg($image))===-1) return 0;
-    $stmt = new Stmt($db, "UPDATE users SET image = ? WHERE id = ?;"); 
-    $stmt->bind("si", array(&$imagePath, &$_SESSION["user"]["id"]));
-    $stmt->exe();
-    $_SESSION["user"]["image"]=$imagePath;
+function changeImage($db, $image){//WORKS :D
+    if (($imagePath = checkImg($image, "userImages"))!==null){//don't need second parameter here... Just wanna keep it here for some reason... idk
+        $stmt = new Stmt($db, "UPDATE users SET image = ? WHERE id = ?;"); 
+        //var_dump($_SESSION);
+        $stmt->bind("si", array(&$imagePath, &$_SESSION["user"]["id"]));
+        $stmt->exe();
+        $_SESSION["user"]["image"]=$imagePath;
+    }
     
     header("Location: index.php");
 }
 
 
-//PRODUCT STUFF
 
+
+?>
+
+<?php
+//IMAGE STUFF
+function listImages($db){//works, just needs css on the frontend
+    $stmt = new Stmt($db, "SELECT DISTINCT * FROM pictures ");
+    $stmt->exe();
+    return $stmt->fetch();//no [0] here because its built for that in mind
+}
+function addImage($db, $title, $image){//should work as well.
+    if(($imgPath =checkImg($image, "images"))!==null){   
+        $stmt = new Stmt($db, "INSERT INTO pictures(userId, title, file) VALUES (?,?,?)");
+        $stmt->bind("iss", array(&$_SESSION["user"]["id"], &$title, &$imgPath));
+        $stmt->exe();
+    } 
+}
+?>
+
+
+
+
+
+
+
+
+
+<?php
+
+//PRODUCT STUFF
+//UNNECESSARY AND USELESS, FREE TO GET RID OF
 function listProducts($db, $search="%", $tag="%", $pageNumber=0, $priceRangeTop=999999, $priceRangeBottom=0, $rating="desc", $onetime=true){//default values, so it should be fine right?
     //search="%" means that I can just avoid if statements, $tag is... idk, just gonna keep that at "%" as well
     //pagenumber can stay at 0 by default, pricerangeTop needs to be set to something otherwise it will show stupidly overpriced products all the time, pricerangeBottom is just simple...
@@ -268,30 +300,4 @@ function updateRating($stmt, $productId){
     $stmt->bind("ii", array(&$rating, &$productId));
     //done! only... 3 hours? why am I so slow?    
 }
-
-
-?>
-
-
-
-
-
-
-<?php
-function listPictures($db){
-    $stmt = new Stmt($db, "SELECT DISTINCT * FROM pictures ");
-    $stmt->exe();
-
-    return $stmt->fetch();
-}
-function addPicture($db, $title, $image){
-    if(($imgPath =checkImg($image, "images"))!==null){   
-        $stmt = new Stmt($db, "INSERT INTO pictures(userId, title, file) VALUES (?,?,?)");
-        $stmt->bind("iss", array(&$_SESSION["user"]["id"], &$title, &$imgPath));
-        $stmt->exe();
-    } 
-}
-
-
-
 ?>

@@ -3,7 +3,7 @@ require "index.php";
 
 
 if (isset($_POST["addPic"])){
-    addPicture($db, $_POST["text"], $_FILES["imgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
+    addImage($db, $_POST["text"], $_FILES["imgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
 }
 if (isset($_SESSION["user"])){
         ?>
@@ -15,7 +15,7 @@ if (isset($_SESSION["user"])){
 <?php
 }
 
-$pictures = listPictures($db);
+$pictures = listImages($db);
 
 if (is_array($pictures)){
     foreach($pictures as $picture){
