@@ -1,0 +1,602 @@
+<?php
+include "./block/header.php";
+//var_dump($_SERVER);
+if (!isset($_COOKIE["first"]))setcookie("first", "true");//nastavit cookie ktery oznamuje ze jsi prisel poprve. Uzitecne pro oznamovani o cookies a dalsi jine vecicky.
+if (isset($_SESSION["user"])){//podiva se jestli je prihlaseny uzivatel
+    var_dump($_SESSION["user"]);
+}
+
+echo "SUT";
+if (isset($_POST["submitLog"])){
+    login($db, $_POST["username"], $_POST["password"]);
+}
+if (isset($_POST["logout"])){
+    unset($_SESSION["user"]);
+    header("location: index.php");
+}
+if (isset($_FILES["userImage"])){
+    changeImage($db, $_FILES["userImage"]);
+    //change image function here
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+    <title>Projkov</title>
+    <style>
+        :root{
+            --primary:rgb(250, 247, 240);
+            --secondary: rgb(59, 59, 59);
+            --theme: rgb(230, 88, 32);
+            --themeOrg: rgb(209, 76, 23);
+            --themeBlu: rgb(98, 117, 180);
+            --themePur: rgb(142, 140, 216);
+            --themeBlo: rgb(89, 102, 145);
+            --themeGre: rgb(100,200,100);
+            --text:rgb(255,255,255);
+        }
+        nav{
+            position:absolute;
+            top:0%;
+            left:0%;
+            width:100%;
+            height:2.5rem;
+            padding-top:0.2rem;
+            padding-bottom:0.1rem;
+            background:var(--theme);
+            display:flex;
+            gap:1rem;
+            justify-content:space-between;
+            align-items:center;
+            align-content:center;
+        }
+        nav > div{
+            margin-bottom:0.3rem;
+        }
+        body{
+            background:var(--primary)
+        }
+        a{
+            border-radius:0.3rem;
+        }
+        /**navLeft */
+        #navLeft{
+            height:100%;
+            padding-left:3%;
+            padding-right:5%;
+            flex-grow:9;
+            display:flex;
+            flex-wrap:nowrap;
+            flex-direction:row;
+            justify-content:flex-start;
+            align-content:stretch;
+            gap:3rem;
+        }
+        #navLeft a{
+            color:var(--text);
+            padding: auto;
+            width:7rem;
+            height:80%;
+            margin-bottom:0.3rem;
+            margin-top:0.4rem;
+            border:0.2rem hidden;
+            border-bottom:solid 0.3rem #ffffff ;
+            text-decoration:none;
+            font-weight:bold;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+        #navLeft a:hover{
+            color:white;
+            background-color:var(--themeOrg);
+            border-bottom-color:var(--themePur);
+        }
+        /**navRight */
+        #navRight{
+            display:flex;
+            flex-direction:row;
+            justify-content:flex-end;
+            align-items:center;
+            flex-wrap:nowrap;
+            flex-grow:1;
+            padding-right:4rem;
+            height:100%;
+            padding-top:0.4rem;
+            padding-bottom:0.3rem;
+
+            gap:3rem;
+        }
+        #navRight a{
+            height:80%;
+            width:5rem;
+            color:white;
+            border-bottom:solid 0.3rem #ffffff ;
+            text-align: center;
+            text-decoration:none;
+            font-weight:bold;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        
+        /* login stuffs */
+        #navRight > form{
+            margin-top:1rem;
+
+            height:100%;
+            width:80%;
+            flex-grow:2;
+            display:flex;
+            flex-direction:row;
+            justify-content:space-between;
+            align-content:center;
+            align-items:center;
+            grid-template-columns: auto auto auto;
+
+            
+            border-radius:0.3rem;
+            background-color:var(--themeOrg);
+            border-bottom:solid white 0.3rem;
+        }
+        #navRight form input{
+            height:2rem;
+            margin:0 0 0 0;
+            border-radius:0.3rem;
+        }
+        #login{
+            margin-top:0.4rem;
+        }
+        #reg:hover{
+            background-color:var(--themeGre);
+        }
+        #log:hover{
+            background-color:var(--themePur);
+        }
+        
+        /**error alert thingy */
+        .err{
+            position: absolute;
+            display:block;
+            border:solid rgb(204, 61, 61);
+            background-color:rgb(245, 200, 200);
+            min-width:10%;
+            min-height:5%;
+            left:50%;
+            top:25%;
+            border-radius:0.5rem;
+            transform:translate(-50%, -50%);
+        }
+
+        /** settings stuffs */
+        #settings{
+            width:3rem;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            height:3rem;
+        }
+        #setButton{
+            position:absolute;
+            margin:0.4rem 0 0 0;
+            width:2rem;
+            height:2rem;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            align-content:center;
+            flex-direction:column;
+            cursor:pointer;
+
+        }
+        #themes{ 
+            position:absolute;
+            display:flex;
+            display:none;
+            align-items:center;
+            justify-content:space-around;
+            align-content:center;
+            flex-direction:row;
+            background-color:var(--theme);
+
+            height:10rem;
+            top:3rem;
+            width:3rem;
+            border-radius:10px;
+        }
+        .themeSelect{
+            border-radius:50%;
+            width:2rem;
+            height:2rem;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            align-content:center;
+        }
+        .inset{
+            border:0.15rem solid white;
+            width:2rem;
+            height:2rem;
+            border-radius:50%;
+        }
+        #darkmode{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(59, 59, 59) 50%)}
+        #whitemode{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(250, 247, 240) 50%)}
+        #bluemode{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(250, 247, 240) 50%)}
+        #darkblue{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(59, 59, 59) 50%)}
+
+        /**logged in stuffs  I HATE CSS*/
+        #nameplate{
+            width:20rem;  
+            height:100%;
+            display:block;
+            background:yellow;
+        }
+        #minimenu{
+            margin-top:0.2rem;
+            cursor:pointer;
+            background:green;
+            height:100%;
+            border-radius:2rem;
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            align-content:center;
+
+        }
+        #username{
+            left:1rem;
+            text-decoration:underline;
+            text-align:center;
+            vertical-align:middle;
+            color:white;
+            background:red;
+            height:100%;
+        }
+        #minimenu > div{
+            display:flex;
+            align-items:center;
+            align-content:center;
+            justify-content:center;
+            height:100%;
+        }
+        #image{
+            background:blue;
+            width:2rem;
+            height:2rem;
+            border-radius:50%;
+            right:1rem;
+        }
+        #hidemenu{
+            display:none;
+            height:20rem;
+            background:var(--themeOrg);
+        }
+        #userstuff{
+            display:flex;
+            flex-direction:row;
+            justify-content:space-between;
+            
+            height:52%;
+            width:100%;
+            background:var(--themeOrg);
+        }
+        #usrinfo{
+            height:100%;
+            width:50%;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            /**text stuffs */
+        }
+        #logout{
+            margin-top:1rem;
+            background-color:var(--theme);
+            border-radius:2rem;
+            color:white;
+            width:80%;
+            height:2rem;
+            font-weight:bold;
+            cursor:pointer;
+            font-size:1rem;
+            border: 0.1rem solid white;
+        }
+        #logout:hover{
+            background-color:var(--themeOrg);
+        }
+        #usrimage{/**image */
+            position:absolute;
+            width:10rem;
+            height:10rem;
+            border-radius:50%;
+            background-color:green;
+            visibility:visible;
+            margin: 0 0 0 0;
+        }
+        #usrimg{/**div parent */
+            height:100%;
+            width:50%;
+            background-color:yellow;
+        }
+        #imageForm{
+            top:-10rem;
+            margin-top:0rem;
+            height:100%;
+            width:100%;
+            
+            background:purple;
+        }
+        #imageForm label{
+            visibility:visible;
+            display:relative;
+            position:absolute;
+            width:10rem;
+            height:10rem;
+            border-radius:50%;
+            cursor:pointer;
+        }
+        #imageForm input{/**input */
+            display:none;
+        }
+        #menuset{
+            height:50%;
+            background:blue;
+        }
+        #thememenu{
+            background:red;
+            display:flex;
+            flex-direction:row;
+            height:100%;
+            justify-items:center;
+            align-items:center;
+            justify-content:space-around;
+            gap: 1rem 1rem;
+        }
+        
+        </style>
+</head>
+<body>
+    <br>
+    <br>
+    <br>
+    <br>
+    <nav>
+        <div id="navLeft"><!--fill in hrefs when necessary, text is also changeable-->
+            <a href="products.php">home</a>
+            <a href="pictures.php">pictures</a>
+            <a href="">elsething</a>
+        </div>
+        <div id="navRight">
+            
+            <?php
+        if (!isset($_SESSION["user"])){//if not logged in, show register and login buttons
+        ?>
+
+            <form id="login"style="display:none"method="POST">
+                <input class="logForm" name="username" id="nameLog" type="text" placeholder="username">
+                <input class="logForm" name="password" id="passLog" type="text" placeholder="password"> 
+                <input style="display:none"type="submit" name="submitLog"> 
+            </form>
+            <a id="log" href="#">login</a>
+
+            <a id="reg" href="reg.php">register</a>
+            <div id="settings"><!--settings here-->
+                <div id="setButton"><div class="inset themeSelect"></div></div>
+                <div id="themes">
+                    <div id="whitemode" class="themeSelect"><div class="inset "></div></div>
+                    <div id="darkmode" class="themeSelect"><div class="inset "></div></div>
+                    <div id="bluemode" class="themeSelect"><div class="inset "></div></div>
+                    <div id="darkblue" class="themeSelect"><div class="inset "></div></div>
+                </div>
+            </div>
+            
+            <?php
+        }
+        else{//if logged in, show profile PLS ADD CSS AND JS TO THIS AND MAKE IT LOOK GOOD
+        ?>  
+            <div id="nameplate">
+                <div id="minimenu">
+                    <div id="username"><?= $_SESSION["user"]["name"]?></div>
+                    <div><img id="image" src=<?="'".$_SESSION["user"]["image"]."'"?> alt="user image"></div>
+                </div>
+                <div id="hidemenu">
+                    <div id="userstuff">
+                        <div id="usrinfo">
+                            info here
+                            <button id="logout">Log out</button>
+                            <form method="post" style="display:none" name="lout" id="lout" > <input type="hidden" name="logout" value="OUT"> </form>
+                        </div>
+                        <div id="usrimg">
+                            <form method="post" id="imageForm" name="imageForm" enctype="multipart/form-data">
+                                <img id="usrimage" src=<?="'".$_SESSION["user"]["image"]."'"?> alt="user image">
+                                <label for="userImage"></label>
+                                <input accept="image/" type="file" name="userImage" id="userImage">
+                            </form>
+                        </div>
+                    </div>
+                    <div id="menuset">
+                        <div id="thememenu">
+                            <div id="whitemode" class="themeSelect"><div class="inset themeSelect"></div></div>
+                            <div id="darkmode" class="themeSelect"><div class="inset themeSelect"></div></div>
+                            <div id="bluemode" class="themeSelect"><div class="inset themeSelect"></div></div>
+                            <div id="darkblue" class="themeSelect"><div class="inset themeSelect"></div></div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </nav>
+</body>
+<script>
+    $(document).ready(function(){
+        //logic for login button stuff
+        $("#log").click(()=>{
+            console.log("GOO")
+            if($("#regist").is(":visible")) $("#regist").toggle();
+            if(!$("#nameLog").val()&&!$("#passLog").val()){
+                $("#login").toggle();
+            }
+            else $("#login").submit();
+        })
+        /* rip 1 day of work
+        //logic for register button stuff
+        $("#reg").click(()=>{
+            console.log("REE");
+            if($("#login").is(":visible")) $("#login").toggle();
+            if(!$("#nameReg").val()&&!$("#passReg").val()&&!$("#passReg2").val()){
+                $("#regist").toggle();
+            }
+            else if ($("#passReg").val()===$("#passReg2").val()){
+                    $("#regist").submit();
+                }
+                else{
+                    $("#passReg").css("border", "red dashed 0.3rem");
+                    $("#passReg2").css("border", "red dotted 0.3rem");
+                }
+        })*/
+        //theme settings
+        let theme;
+        let name = 'theme=';
+        let decodedCookie = decodeURIComponent(document.cookie);//decode from cookies
+        let ca = decodedCookie.split(';');//break into arrays
+        for(let i = 0; i <ca.length; i++) {//loop through arrays and search for
+        let c = ca[i];
+
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            console.log(c);
+            theme =c.substring(name.length, c.length);
+            }
+        }
+            
+        console.log(theme);
+
+        switch(theme){
+            case "white":{
+                    $(":root").animate("", "", ()=>{
+                    $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
+                    $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
+                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
+                    $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
+                    document.cookie = "theme=white";
+                });
+                break;
+            }
+            case "dark":{
+                $(":root").animate("", "", ()=>{
+                    $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
+                    $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
+                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
+                    $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
+                    document.cookie = "theme=dark";
+                });
+                break;
+            }
+            case "blue":{
+                    $(":root").animate("", "", ()=>{
+                    $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
+                    $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
+                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
+                    $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
+                    document.cookie = "theme=blue";
+                });
+                break;
+            }
+            case "bluedark":{
+                    $(":root").animate("", "", ()=>{
+                    $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
+                    $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
+                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
+                    $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
+                    document.cookie = "theme=bluedark";
+                });
+                break;
+            }
+
+        }
+
+
+        $("#setButton").click(()=>{
+            console.log("SET");
+            $("#themes").toggle();
+            $("#themes").animate({
+                height:'10rem'
+            });
+
+        })
+        $("#whitemode").click(()=>{
+            console.log("white");
+                $(":root").animate("", "", ()=>{
+                $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
+                $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
+                $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
+                $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
+                document.cookie = "theme=white";
+            });
+        })
+        $("#darkmode").click(()=>{
+            console.log("dark");
+                $(":root").animate("", "", ()=>{
+                $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
+                $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
+                $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
+                $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
+                document.cookie = "theme=dark";
+            });
+        })
+        $("#bluemode").click(()=>{
+            console.log("blue");
+            $(":root").animate("", "", ()=>{
+                $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
+                $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
+                $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
+                $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
+                document.cookie = "theme=blue";
+            });
+        })
+        $("#darkblue").click(()=>{
+            console.log("bluedark");
+            $(":root").animate("", "", ()=>{
+                $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
+                $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
+                $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
+                $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
+                document.cookie = "theme=bluedark";
+            });
+        })
+
+        $("#minimenu").click(()=>{
+            console.log("MIN")
+            $("#username").toggle();
+            $("#image").toggle();
+            $("#hidemenu").animate({
+                height:'toggle'
+            });
+        })
+        $("#logout").click(()=>{//works
+            $("#lout").submit();
+            console.log("LOG");
+        })
+
+        //submit immediately after giving file... doesn't work for some reason ;-;
+        //I hate css ;-; I want to cry ;-;
+        $("#userImage").change(()=>{
+            $("#imageForm").submit();
+        })
+        
+    });
+    </script>
+            
