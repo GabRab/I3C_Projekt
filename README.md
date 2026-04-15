@@ -22,3 +22,5 @@ projekt do WEA
 
 15.04 - brought to git today. I'll see where I left off and try to continue. Please excuse the ramblings of previous dates... I'm tired despite not even doing much today.
         Last time I added pictures.php and made it all work, today I guess I'm going to expand on that a little bit.
+        Zapomněl jsem že děláme fotogalerii, takže můžu zahodit většinu těch věcí co tam jsou. Zatím jenom v php naštěstí.
+        Css bude dělat Martin, protože mi vůbec nejde.
