@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 15, 2026 at 09:18 PM
+-- Generation Time: Apr 18, 2026 at 11:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pictures`
+-- Table structure for table `images`
 --
 
-CREATE TABLE `pictures` (
+CREATE TABLE `images` (
   `imgId` int(255) NOT NULL,
   `userId` int(255) NOT NULL,
   `file` varchar(255) NOT NULL,
@@ -36,12 +36,36 @@ CREATE TABLE `pictures` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pictures`
+-- Dumping data for table `images`
 --
 
-INSERT INTO `pictures` (`imgId`, `userId`, `file`, `title`, `dateAdded`) VALUES
+INSERT INTO `images` (`imgId`, `userId`, `file`, `title`, `dateAdded`) VALUES
 (21, 1, 'images/69dd2c9f78550Screenshot_20251116_003103.png', '123', '2026-04-15 20:24:21.952628'),
 (22, 1, 'images/69dfe09acafe5Screenshot_20260322_220942.png', 'ader', '2026-04-15 21:01:46.831750');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tagConnections`
+--
+
+CREATE TABLE `tagConnections` (
+  `connId` int(11) NOT NULL,
+  `imgId` int(11) NOT NULL,
+  `tagId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+
+CREATE TABLE `tags` (
+  `tagId` int(11) NOT NULL,
+  `tagValue` varchar(255) NOT NULL,
+  `tagDesc` varchar(255) NOT NULL COMMENT 'use later for distinguishing between user tags and normal tags with set descriptions'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -75,22 +99,25 @@ INSERT INTO `users` (`id`, `name`, `password`, `image`, `telephone`, `email`, `p
 --
 
 --
--- Indexes for table `pictures`
+-- Indexes for table `images`
 --
-ALTER TABLE `pictures`
-  ADD PRIMARY KEY (`imgId`);
+ALTER TABLE `images`
+  ADD PRIMARY KEY (`imgId`),
+  ADD KEY `foreing_usr` (`userId`);
 
 --
--- Indexes for table `products`
+-- Indexes for table `tagConnections`
 --
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `tagConnections`
+  ADD PRIMARY KEY (`connId`),
+  ADD KEY `foreing_tag` (`tagId`),
+  ADD KEY `foreing_img` (`imgId`);
 
 --
--- Indexes for table `ratings`
+-- Indexes for table `tags`
 --
-ALTER TABLE `ratings`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`tagId`);
 
 --
 -- Indexes for table `users`
@@ -103,16 +130,45 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `pictures`
+-- AUTO_INCREMENT for table `images`
 --
-ALTER TABLE `pictures`
+ALTER TABLE `images`
   MODIFY `imgId` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT for table `tagConnections`
+--
+ALTER TABLE `tagConnections`
+  MODIFY `connId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tags`
+--
+ALTER TABLE `tags`
+  MODIFY `tagId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `images`
+--
+ALTER TABLE `images`
+  ADD CONSTRAINT `foreing_usr` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `tagConnections`
+--
+ALTER TABLE `tagConnections`
+  ADD CONSTRAINT `foreing_img` FOREIGN KEY (`imgId`) REFERENCES `images` (`imgId`),
+  ADD CONSTRAINT `foreing_tag` FOREIGN KEY (`tagId`) REFERENCES `tags` (`tagId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
