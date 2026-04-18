@@ -128,176 +128,87 @@ function changeImage($db, $image){//WORKS :D
 <?php
 //IMAGE STUFF
 function listImages($db){//works, just needs css on the frontend
-    $stmt = new Stmt($db, "SELECT DISTINCT * FROM pictures ");
+    $stmt = new Stmt($db, "SELECT DISTINCT * FROM images ");
     $stmt->exe();
-    return $stmt->fetch();//no [0] here because its built for that in mind
+    return $stmt->fetch();//no [0] here because its built with that in mind
 }
 function addImage($db, $title, $image){//should work as well.
     if(($imgPath =checkImg($image, "images"))!==null){   
-        $stmt = new Stmt($db, "INSERT INTO pictures(userId, title, file) VALUES (?,?,?)");
+        $stmt = new Stmt($db, "INSERT INTO images(userId, title, file) VALUES (?,?,?)");
         $stmt->bind("iss", array(&$_SESSION["user"]["id"], &$title, &$imgPath));
         $stmt->exe();
     } 
 }
+//add function for getting your images, editing images, removing images. (17.04.2026)
+function editImage($db, $title, $image, $imageId){//edit image (button will show up if the image you're viewing matches its userId to the current user's userId)
+    if(($imgPath =checkImg($image, "images"))!==null){   
+        $stmt = new Stmt($db, "UPDATE images SET title = ?, file = ? WHERE imgId = ?");
+        $stmt->bind("iss", array(&$title, &$imgPath, &$imageId));
+        $stmt->exe();
+    } 
+}
+function userImages($db, $userId){//returns images of the user for use in displaying the profile I guess?
+    $stmt = new Stmt($db, "SELECT * FROM images WHERE userId = ?");//TODO: expand this to accomodate SUM and AVG of different metrics using JOIN ON
+    $stmt->bind("i", array(&$userId));
+    $stmt->exe();
+    return $stmt->fetch();
+}
+function delImage($db, $imageId){
+    $stmt = new Stmt($db, "DELETE FROM images WHERE imgId = ?");
+    $stmt->bind("i", array(&$imageId));
+    $stmt->exe();
+}
+//maybe after that comments under images, likes, views, idk?
+//don't make a tag search system, don't make rule34, don't... bad thoughts
+//sums of views and likes on profile page. Profile page is just statistics I think?
 ?>
 
 
 
-
-
-
-
-
-
 <?php
-
-//PRODUCT STUFF
-//UNNECESSARY AND USELESS, FREE TO GET RID OF
-function listProducts($db, $search="%", $tag="%", $pageNumber=0, $priceRangeTop=999999, $priceRangeBottom=0, $rating="desc", $onetime=true){//default values, so it should be fine right?
-    //search="%" means that I can just avoid if statements, $tag is... idk, just gonna keep that at "%" as well
-    //pagenumber can stay at 0 by default, pricerangeTop needs to be set to something otherwise it will show stupidly overpriced products all the time, pricerangeBottom is just simple...
-    // rating is DESC and ASC in sql, searching for individual ratings is actually very stupid because they keep changing anyways.
-    //onetime is there for the different pages having different sources, so false would mean its supplied by a warehous while true would mean its a private deal like on craigslist
-
-    //1. get the products procured by the search
-    //So I need:
-    // a. where the name of product it LIKE the search thing
-    // b. where the product values match the values set in search conditions (if its a one-time product, if its rated good, etc.)
-    // I don't want to do what I did last year with the stupidly overcomplicated tag search system ;-; 
-
-    //what happens if the values are null???
-    //stuff probably breaks ;-;
-//prepare statement according to stuff that we search for (I could've just put values preemptively, but that's a bad idea)
-
-    //apparently its impossible to just have a single rating value update based on 
-
-    
-/*
-    $statement = "   
-    SELECT *
-    FROM products
-    JOIN users ON products.user_id = users.id
-    WHERE price>=?
- ";    
-    $bindarray=array(&$priceRangeBottom);
-    $bindtags="d";
-    if (isset($tag)) {
-        $statement.=" AND tag=?"; 
-        $tager = &$tag;
-        $bindtags.="s";
-        array_push($bindarray, $tager);
-        }
-    if (isset($oneTime)) {
-        $statement.=" AND one_time=?";
-        $timer = &$oneTime;
-        $bindtags.="i";
-        array_push($bindarray, $timer);
-        }
-    if (isset($priceRangeTop)) {
-        $statement.=" AND price<=?";
-        $toper = &$priceRangeTop;
-        $bindtags.="d";
-        array_push($bindarray, $toper);
-        }
-    if (isset($search)) {
-        $statement.=" AND name LIKE ?"; 
-        $serach = &$search;
-        $bindtags.="s";
-        array_push($bindarray, $serach);
-        }
-    if (isset($rating)) {
-        $statement.=" AND rating>=?";
-        $rater = &$rating;
-        $bindtags.="d"; 
-        array_push($bindarray, $rater);
-        }
-
-        //limits to 10 items per page
-        $statement.=" 
-        LIMIT 10 OFFSET ?
-        ";
-        $pageNumber= $pageNumber*10;
-        $pager = &$pageNumber;
-        array_push($bindarray, $pager);
-        $bindtags.="i";
-*/
-//mistakes in this:
-// 1. searching by rating is stupid
-// 2. having onetime as a boolean is also stupid, just make a different page for commercial products and one page for independent
-// 3. putting stuff in a variable like this doesn't feel right...
-
-//oh no, I'm gonna need to add another table for orders AIAHHS
-
-    $stmt = new Stmt($db, "
-    SELECT *
-    FROM products
-    JOIN users ON products.user_id = users.id
-    WHERE price>=? AND price<=? AND 
-    ");
-    $stmt->bind($bindtags, $bindarray);
+//TAG STUFF (18.04.2026)
+function listTags($db){//return tags for tag list
+    $stmt = new Stmt($db, "SELECT * FROM tags");
     $stmt->exe();
     return $stmt->fetch();
-    //It's so short without a complicated tag system... wow.
-    //tag v tomhle pripade je jenom upresneni produktu. Napr. med je jidlo, pocitac je elektronika, atd. 
 }
-
-function createProduct($db, $name, $description, $image, $currentSupply, $purchaseLimit, $one_time=true, $price, $tag){
-    if (($imagePath = checkImg($image))===-1) return 0;
-    $stmt = new Stmt($db, "INSERT INTO products(user_id, name, description, image, current_supply, purchase_limit, one_time, price, tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind("sssiiid", array(&$_SESSION["user"]["id"],&$name, &$description, &$imagePath, &$currentSupply, &$purchaseLimit, &$one_time, &$price, &$tag));
-    $stmt->exe();
-}
-
-function editProduct($db, $id, $name, $description, $image, $currentSupply, $purchaseLimit, $one_time=true, $price, $tag){
-    if (($imagePath = checkImg($image))===-1) return 0;
+function listImgTags($db, $imgId){//return tags of specific image
     $stmt = new Stmt($db, "
-    UPDATE products
-    SET name = ?, description = ?, image = ?, current_supply = ?, purchase_limit = ?, one_time = ?, price = ?, tag = ?
-    WHERE products.id = ?;
+    SELECT * FROM tags t
+    JOIN tagConns tc ON t.tagId = tc.tagID
+    WHERE tc.imgId = ?
     ");
-    $stmt->bind("sssiiids", array(&$name, &$description, &$imagePath, &$currentSupply, &$purchaseLimit, &$one_time, &$price, &$tag));
+    $stmt->bind("i", array(&$imageId));
+    $stmt->exe();
+    return $stmt->fetch();
+}
+//I just realised(22:57) that I might not need user tags after all... It's already connected with the users and I've decided to make a separate search thingy for images specific for users, so checking if it doesn't equal user is kinda useless
+function addTag($db, $tagName, $tagDesc=''){//add tag if it doesn't exist yet (tagDesc is because of user tags)
+    $stmt = new Stmt($db, "SELECT * FROM tags WHERE tagName = ? AND tagDesc = ?");//tagDesc shows up to explain the tag further, though I'm having second thoughts if it has to be here
+    $stmt->bind("ss", array(&$tagName, &$tagDesc));
+    if ($stmt->fetch()[0]!==null){
+        $stmt->stmt ="INSERT INTO tags(tagName, tagDesc) VALUES (?, ?)";
+        $stmt->bind("ss", array(&$tagName, &$tagDesc));
+        $stmt->exe();
+    }
+}
+function joinTag($db, $imgId, $tag){//joins single tag!
+    //if tag donesn't exist, make with empty string and add later in tag stuff page
+    addTag($db, $tag);
+    //get tagIds and create connection
+    $stmt = new Stmt($db, "SELECT * FROM tags WHERE tagName = ?");//problem: how to make fanwork? Well, user tags are for stuff created by the user, while the rest are just fanworks I guess
+    $stmt->bind("s", array(&$tag));
+    $stmt->exe();
+    $tagId = $stmt->fetch()[0]["tagId"];
+    $stmt->stmt = "INSERT INTO tagConnections(tagId, imgId) VALUES (?, ?)";
+    $stmt->bind("ii", array(&$imgId, &$tagId));
+    $stmt->exe();
+}
+function unjoinTag($db, $imgId, $tagId){//get tagId and imgId from edit page
+    $stmt = new Stmt($db, "DELETE FROM tagConnections WHERE tagId = ? AND imgId = ?");
+    $stmt->bind("s", array(&$tag));
     $stmt->exe();
 }
 
-//product rating stuffs
-function addRating($db, $productId, $rating, $description){
-    $stmt = new Stmt($db, "INSERT INTO ratings (user_id, product_id, rating, description) VALUES (?, ?, ?, ?);");
-    $stmt->bind("iiis", array(&$_SESSION["user"]["id"],&$productId, &$rating, &$description));
-    $stmt->exe();
-    updateRating($stmt, $productId);
-}
-function editRating($db, $id, $rating, $description, $productId){
-    $stmt = new Stmt($db, "
-    UPDATE ratings
-    SET rating = ?, description = ?
-    WHERE id = ?;
-    ");
-    $stmt->bind("isi", array(&$rating, &$description, &$id));
-    $stmt->exe();
-    updateRating($stmt, $productId);
-}
-function deleteRating($db, $id, $productId){//button only shows up for author, so it should be fine
-    $stmt = new Stmt($db, "DELETE FROM ratings WHERE id = ?");
-    $stmt->bind("i", array(&$id));
-    $stmt->exe();
-    updateRating($stmt, $productId);
-}
 
-function updateRating($stmt, $productId){
-    //now that the rating is created, we need to update the products rating
-    //how do we do that? Easy in php :D (I searched in sql for about an hour and found that triggers are simply too much for this)
-    //we get the average of the ratings
-    $stmt->stmt="SELECT AVG(rating) FROM ratings WHERE product_id = ?";
-    $stmt->bind("i", array(&$productId));
-    $stmt->exe();
-    $rating =$stmt->fetch();
-    //then we update the product ratings
-    $stmt->stmt="
-    UPDATE products
-    SET rating = ?
-    WHERE id = ?;
-    ";
-    $stmt->bind("ii", array(&$rating, &$productId));
-    //done! only... 3 hours? why am I so slow?    
-}
 ?>

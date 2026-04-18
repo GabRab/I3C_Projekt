@@ -1,26 +1,43 @@
 <?php
-//apache2 installed itself after installing php so php extension here could work
-//make sure to turn it off before starting xampp again
-include "back/init.php";
-require "block/header.phtml";
-//list the products according to 
+//18.04.2026 I changed pictures.php into index.php because its useless otherwise, I also included init.php in header.phtml because it would've just been useless like that too...
+//I might add posts to this too, but that would be more work. I really am making r34 aren't I?
+//sooo... basic restructuring due to elementary mistakes and a few untested functions... yay. I still have to reach the object quota of 3 though... I want to cry.
+require "header.phtml";
 
 
-/**takin a break from the shitshow that is header.phtml
- * ideas: searching for product (Just don't overdo it on the tag search system again, no tags!)
- * 
- * 
- * Wait... Why are you making css AT THE START??
- * BECAUSE I WANTED TO MAKE IT WORK AT LEAST SOMEWHAT BEFORE GOING FURTHER!!!
- * 
- * 
- * 06.04 - I woke up and immediately started working, at least the backend. Css sometime later... Hopefully after I finally make it work.
- * I added a bunch of php, everything after the user functions today. That means products, ratings and that's about it...
- *
- * 13.04 - I'm back! I took a break because I was falling apart thinking too much about how it wasn't working so I focused on school and did some reading over the weekend so I didn't have time to do this sadly...
- * Today I want to make this thing work, because the stuff I added last time is a mess and just straight up doesn't work.
- * Ok, so instead of going through the depression that is dealing with products, I instead spent... 3 hours (maybe?) making pictures.php and adding stuff to it. It works as well and I improved some more stuff on header.php
- * Why am I putting every function into header.php? I... dunno. I kinda don't want to stop despite it being a clearly good idea from the amount of lines its accumulating.
- */
+if (isset($_POST["addPic"])){
+    addImage($db, $_POST["text"], $_FILES["imgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
+}
+if (isset($_SESSION["user"])){
+        ?>
+<form method="post" enctype="multipart/form-data" action="">
+    <input type="text" name="text" id="text">
+    <input type="file" name="imgFile" id="imgFile">
+    <input type="submit" name="addPic" id="addPic">
+</form>
+<?php
+}
+
+$pictures = listImages($db);
+
+if (is_array($pictures)){
+    foreach($pictures as $picture){
+        ?>
+<div>
+    <?php var_dump($picture);?>
+    <img src="<?=$picture["file"]?>" alt="">
+</div>
+
+
+
+
+<?php
+
+
+}
+};
 ?>
 
+<h1>
+    hell (if this is displayed, it means everything before it didn't make this crash)
+</h1>

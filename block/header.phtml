@@ -1,5 +1,6 @@
 <?php
-include "./block/header.php";
+require "block/init.php";
+include "block/header.php";
 //var_dump($_SERVER);
 if (!isset($_COOKIE["first"]))setcookie("first", "true");//nastavit cookie ktery oznamuje ze jsi prisel poprve. Uzitecne pro oznamovani o cookies a dalsi jine vecicky.
 if (isset($_SESSION["user"])){//podiva se jestli je prihlaseny uzivatel
