@@ -25,3 +25,9 @@ projekt do WEA
         Zapomněl jsem že děláme fotogalerii, takže můžu zahodit většinu těch věcí co tam jsou. Zatím jenom v php naštěstí.
         Css bude dělat Martin, protože mi vůbec nejde.
         Spravil jsem funkce v php, takze uz funguje vsechno co tam zatim máme. (až na produkty ale to stejně zahodím)
+
+17.04 - added functions for adding images, getting specifically your images, editing and removing (untested)
+
+18.04 - I changed pictures.php into index.php because its useless otherwise, I also included init.php in header.phtml because it would've just been useless like that too...
+        I might add posts to this too, but that would be more work. I really am making r34 aren't I?
+        sooo... basic restructuring due to elementary mistakes and a few untested functions(also untested)... yay. I still have to reach the object quota of 3 though... I want to cry.
