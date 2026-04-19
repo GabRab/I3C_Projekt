@@ -1,7 +1,10 @@
 <?php
 /** code placed here:
- * user functions - login, register, changeImage(not sure if it works)
- * image functions - addImage, listImages
+ * Stmt object - basic object functions, bind, exe, fetch.
+ * additional functions - checkImg
+ * user functions - listUsers, login, register, changeImage
+ * image functions - listImages, userImages addImage, editImage, delImage
+ * tag functions - listTags, listImgTags, addTags, joinTags, unjoinTags
  */
 class Stmt{
     private $db;
@@ -85,7 +88,7 @@ function login($db, $name, $pass){//WORKS :D
     //redirection is not needed because I managed to put login in the navbar
     //header("Location: ./index.php");
 }
-function register($db, $name, $pass, $email, $tel){// WORKS although it could get changed to reflect the complexity of a normal fotogallery by losing that $tel
+function register($db, $name, $pass){// WORKS although it could get changed to reflect the complexity of a normal fotogallery by losing that $tel
     //make the class and see if account name is already used
     $stmt = new Stmt($db, "SELECT * FROM users WHERE name=?");
     $stmt->bind("s", array(&$name));
@@ -96,10 +99,10 @@ function register($db, $name, $pass, $email, $tel){// WORKS although it could ge
         return 0;
     };
     //add the account to database
-    $stmt->stmt ="INSERT INTO users(name, password, image, email, telephone) VALUES (?, ?, ?, ?, ?);";//set the statement 
+    $stmt->stmt ="INSERT INTO users(name, password, image) VALUES (?, ?, ?);";//set the statement 
     $hashedPass =password_hash($pass, PASSWORD_BCRYPT);
     $imagePath = "userImages/default.png";
-    $stmt->bind("sssss", array(&$name, &$hashedPass, &$imagePath, &$email, &$tel));//bind the params
+    $stmt->bind("sss", array(&$name, &$hashedPass, &$imagePath));//bind the params
     $stmt->exe();
     //fetch again for session values
     $stmt->stmt ="SELECT * FROM users WHERE name=?";
@@ -110,42 +113,49 @@ function register($db, $name, $pass, $email, $tel){// WORKS although it could ge
     }
 function changeImage($db, $image){//WORKS :D
     if (($imagePath = checkImg($image, "userImages"))!==null){//don't need second parameter here... Just wanna keep it here for some reason... idk
-        $stmt = new Stmt($db, "UPDATE users SET image = ? WHERE id = ?;"); 
+        $stmt = new Stmt($db, "UPDATE users SET usrImage = ? WHERE userId = ?;"); 
         //var_dump($_SESSION);
         $stmt->bind("si", array(&$imagePath, &$_SESSION["user"]["id"]));
         $stmt->exe();
-        $_SESSION["user"]["image"]=$imagePath;
+        $_SESSION["user"]["usrImage"]=$imagePath;
     }
     
     header("Location: index.php");
 }
 
+function listUsers($db, $string="%"){//list according to searched string
+    $stmt = new Stmt($db, "SELECT * FROM users WHERE name LIKE ?");
+    $stmt->bind("s", array(&$string));
+    $stmt->exe();
+    return $stmt->fetch();
+}
+function getUser($db, $userId){//get everything about a single user (maybe I could just limit listUsers, but I don't really see the point in that right now)
+    $stmt = new Stmt($db, "SELECT * FROM users WHERE userId = ?");
+    $stmt->bind("i", array(&$userId));
+    $stmt->exe();
+    return $stmt->fetch()[0];
+}
+//add editing stuff
+function editUserS($db, $edit, $value){//change string value
+    $stmt = new Stmt($db, "UPDATE users SET ".$edit." = ? WHERE userId = ?");
+    $stmt->bind("si", array(&$value, &$_SESSION["user"]["id"]));
+    $stmt->exe();
+}
 
-
-
+//change privilige level later as well when email or phone number is added
 ?>
+
+
+
 
 <?php
 //IMAGE STUFF
-function listImages($db){//works, just needs css on the frontend
-    $stmt = new Stmt($db, "SELECT DISTINCT * FROM images ");
+function listImages($db, $search="%"){//works, just needs css on the frontend
+    if ($search!="%") $search = "%".$search."%";//if search is not just % allow for easier searching, else finding someone would be really hard... It's not the best but its atleast something I guess
+    $stmt = new Stmt($db, "SELECT DISTINCT * FROM images WHERE title LIKE ?");
+    $stmt->bind("s", array(&$search));//search according to title (kinda useless with images tho)
     $stmt->exe();
     return $stmt->fetch();//no [0] here because its built with that in mind
-}
-function addImage($db, $title, $image){//should work as well.
-    if(($imgPath =checkImg($image, "images"))!==null){   
-        $stmt = new Stmt($db, "INSERT INTO images(userId, title, file) VALUES (?,?,?)");
-        $stmt->bind("iss", array(&$_SESSION["user"]["id"], &$title, &$imgPath));
-        $stmt->exe();
-    } 
-}
-//add function for getting your images, editing images, removing images. (17.04.2026)
-function editImage($db, $title, $image, $imageId){//edit image (button will show up if the image you're viewing matches its userId to the current user's userId)
-    if(($imgPath =checkImg($image, "images"))!==null){   
-        $stmt = new Stmt($db, "UPDATE images SET title = ?, file = ? WHERE imgId = ?");
-        $stmt->bind("iss", array(&$title, &$imgPath, &$imageId));
-        $stmt->exe();
-    } 
 }
 function userImages($db, $userId){//returns images of the user for use in displaying the profile I guess?
     $stmt = new Stmt($db, "SELECT * FROM images WHERE userId = ?");//TODO: expand this to accomodate SUM and AVG of different metrics using JOIN ON
@@ -153,6 +163,44 @@ function userImages($db, $userId){//returns images of the user for use in displa
     $stmt->exe();
     return $stmt->fetch();
 }
+function listImage($db, $imgId){//returns info about image array(info->{user, image}, tags->{every tag connected to this})
+    //get info about image and user, put it into array
+    $stmt = new Stmt($db, "
+    SELECT i.*, u.* FROM images i 
+    JOIN users u ON i.userId = u.userId 
+    WHERE imgId = ? 
+    ");//TODO: expand this to accomodate SUM and AVG of different metrics using JOIN ON
+    $stmt->bind("i", array(&$imgId));
+    $stmt->exe();
+    $fetch["info"] = $stmt->fetch();
+ 
+    //get tags related to image and put it into array
+    $stmt->stmt="
+    SELECT t.* FROM tagConnections tc 
+    JOIN tags t ON tc.tagId = t.tagId
+    WHERE tc.imgId = ?";
+    $stmt->bind("i", array(&$imgId));
+    $stmt->exe();
+ 
+    $fetch["tags"] = $stmt->fetch();
+    return $fetch;
+}
+function addImage($db, $title, $image){//should work as well.
+    if(($imgPath =checkImg($image, "images"))!==null){   
+        $stmt = new Stmt($db, "INSERT INTO images(userId, title, imgFile) VALUES (?,?,?)");
+        $stmt->bind("iss", array(&$_SESSION["user"]["id"], &$title, &$imgPath));
+        $stmt->exe();
+    } 
+}
+//add function for getting your images, editing images, removing images. (17.04.2026)
+function editImage($db, $title, $image, $imageId){//edit image (button will show up if the image you're viewing matches its userId to the current user's userId)
+    if(($imgPath =checkImg($image, "images"))!==null){   
+        $stmt = new Stmt($db, "UPDATE images SET title = ?, imgFile = ? WHERE imgId = ?");
+        $stmt->bind("iss", array(&$title, &$imgPath, &$imageId));
+        $stmt->exe();
+    } 
+}
+
 function delImage($db, $imageId){
     $stmt = new Stmt($db, "DELETE FROM images WHERE imgId = ?");
     $stmt->bind("i", array(&$imageId));
@@ -172,18 +220,9 @@ function listTags($db){//return tags for tag list
     $stmt->exe();
     return $stmt->fetch();
 }
-function listImgTags($db, $imgId){//return tags of specific image
-    $stmt = new Stmt($db, "
-    SELECT * FROM tags t
-    JOIN tagConns tc ON t.tagId = tc.tagID
-    WHERE tc.imgId = ?
-    ");
-    $stmt->bind("i", array(&$imageId));
-    $stmt->exe();
-    return $stmt->fetch();
-}
 //I just realised(22:57) that I might not need user tags after all... It's already connected with the users and I've decided to make a separate search thingy for images specific for users, so checking if it doesn't equal user is kinda useless
 function addTag($db, $tagName, $tagDesc=''){//add tag if it doesn't exist yet (tagDesc is because of user tags)
+    if ($tagDesc==='') $tagDesc=$tagName;//if no description, then make name the description...
     $stmt = new Stmt($db, "SELECT * FROM tags WHERE tagName = ? AND tagDesc = ?");//tagDesc shows up to explain the tag further, though I'm having second thoughts if it has to be here
     $stmt->bind("ss", array(&$tagName, &$tagDesc));
     if ($stmt->fetch()[0]!==null){

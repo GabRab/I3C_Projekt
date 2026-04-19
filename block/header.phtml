@@ -1,6 +1,6 @@
 <?php
-require "block/init.php";
-include "block/header.php";
+require "back/init.php";
+require "block/header.php";
 //var_dump($_SERVER);
 if (!isset($_COOKIE["first"]))setcookie("first", "true");//nastavit cookie ktery oznamuje ze jsi prisel poprve. Uzitecne pro oznamovani o cookies a dalsi jine vecicky.
 if (isset($_SESSION["user"])){//podiva se jestli je prihlaseny uzivatel
@@ -371,9 +371,9 @@ if (isset($_FILES["userImage"])){
     <br>
     <nav>
         <div id="navLeft"><!--fill in hrefs when necessary, text is also changeable-->
-            <a href="products.php">home</a>
-            <a href="pictures.php">pictures</a>
-            <a href="">elsething</a>
+            <a href="index.php">images</a><!--search and display images-->
+            <a href="users.php">users</a><!--search for users-->
+            <a href="tags.php">tags</a><!--edit tags individually-->
         </div>
         <div id="navRight">
             
@@ -406,7 +406,7 @@ if (isset($_FILES["userImage"])){
             <div id="nameplate">
                 <div id="minimenu">
                     <div id="username"><?= $_SESSION["user"]["name"]?></div>
-                    <div><img id="image" src=<?="'".$_SESSION["user"]["image"]."'"?> alt="user image"></div>
+                    <div><img id="image" src=<?="'".$_SESSION["user"]["usrImage"]."'"?> alt="user image"></div>
                 </div>
                 <div id="hidemenu">
                     <div id="userstuff">
@@ -417,7 +417,7 @@ if (isset($_FILES["userImage"])){
                         </div>
                         <div id="usrimg">
                             <form method="post" id="imageForm" name="imageForm" enctype="multipart/form-data">
-                                <img id="usrimage" src=<?="'".$_SESSION["user"]["image"]."'"?> alt="user image">
+                                <img id="usrimage" src=<?="'".$_SESSION["user"]["usrImage"]."'"?> alt="user image">
                                 <label for="userImage"></label>
                                 <input accept="image/" type="file" name="userImage" id="userImage">
                             </form>
