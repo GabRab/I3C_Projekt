@@ -34,4 +34,5 @@ gab{
 
 19.04. - fixed some stuff I added last time, general fixes in html, functions, ...
          I expanded on some stuff and removed some stuff
+         I also changed some stuff so that it is a bit more comprehensible (header.phtml is still a mess tho ;-;)
 }
