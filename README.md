@@ -1,7 +1,7 @@
 # I3C_Projekt
 projekt do WEA
 
-       
+gab{
 1.4. - večer jsem začal pracovat na tomhle projektu, zatím jenom bojování s css a trochu rozpracování classy do php
 
 2.4. - celý den jsem pracoval na projektu do WEA, rozpracoval jsem přihlašování a přidal trochu css
@@ -31,3 +31,7 @@ projekt do WEA
 18.04 - I changed pictures.php into index.php because its useless otherwise, I also included init.php in header.phtml because it would've just been useless like that too...
         I might add posts to this too, but that would be more work. I really am making r34 aren't I?
         sooo... basic restructuring due to elementary mistakes and a few untested functions(also untested)... yay. I still have to reach the object quota of 3 though... I want to cry.
+
+19.04. - fixed some stuff I added last time, general fixes in html, functions, ...
+         I expanded on some stuff and removed some stuff
+}
