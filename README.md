@@ -1,8 +1,7 @@
 # I3C_Projekt
 projekt do WEA
-please display this in code
-gab{
 <div>
+gab{
 <div>
 1.4. - <p>večer jsem začal pracovat na tomhle projektu, zatím jenom bojování s css a trochu rozpracování classy do php</p>
 </div>
@@ -59,4 +58,5 @@ gab{
          <p>I also expanded on some other stuff and learnt some nice stuff... PUT THE UPDATES BEFORE GETTING THE LISTINGS IN PHP (it's an issue that I solved today, which broke me last year)</p>
          <p>I wonder when my classmates are going to help me... One said he wants to help with css so I've been putting it off and the other... I dunno he didn't say anything, he just skipped the topic.</p>
 </div>
+}
 </div>
