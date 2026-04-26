@@ -35,4 +35,12 @@ gab{
 19.04. - fixed some stuff I added last time, general fixes in html, functions, ...
          I expanded on some stuff and removed some stuff
          I also changed some stuff so that it is a bit more comprehensible (header.phtml is still a mess tho ;-;)
-}
+
+25.04. - sorry for a lack of updates, I've been too tired to do anything this week and didn't have time.
+         anyways, I've added a bit to image.php, users.php and profile.php so that the info shows up in the html templates.
+         I can't remember much after that
+         my plans so far are: tag search implementation, css (I'm scared), fix header.phtml because its an ugly mess, I wonder when my classmates are going to help me, comments (cool if recursive, but I don't know how to do that)
+         
+26.04. - I added tag searching, comments(creation, listing based on images and deletion) that work, fixed changeImage which was broken for a while...
+         I also expanded on some other stuff and learnt some nice stuff... PUT THE UPDATES BEFORE GETTING THE LISTINGS IN PHP (it's an issue that I solved today, which broke me last year)
+         I wonder when my classmates are going to help me... One said he wants to help with css so I've been putting it off and the other... I dunno he didn't say anything, he just skipped the topic.
