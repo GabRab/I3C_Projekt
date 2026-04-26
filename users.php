@@ -13,12 +13,14 @@ else $users = listUsers($db);//sadly need to have this here because null still c
 
 <?php
 
-
-
+//minor differences with privilege level (kinda like a blue checkmark, except you get it when you give email and maybe telephone number to make sure you're not a bot. People without such things are restricted on how much stuff they can do.)
 foreach($users as $user){
-var_dump($user);//add css to make look good I guess?
-?>
-<div></div>
+    ?>
+<a href="profile.php?userId=<?=$user["userId"]?>"><!--ADD CSS HERE TOO--><!--surely there's no problem with just doing this right? Like security wise.-->
+    <p><?=$user["name"]?></p>
+    <p><?=$user["userCreation"]?></p><!--date of user account creation-->
+    <img src="<?=$user["userImage"]?>">
+</a>
 <?php
 }
 

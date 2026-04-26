@@ -406,7 +406,7 @@ if (isset($_FILES["userImage"])){
             <div id="nameplate">
                 <div id="minimenu">
                     <div id="username"><?= $_SESSION["user"]["name"]?></div>
-                    <div><img id="image" src=<?="'".$_SESSION["user"]["usrImage"]."'"?> alt="user image"></div>
+                    <div><img id="image" src=<?="'".$_SESSION["user"]["userImage"]."'"?> alt="user image"></div>
                 </div>
                 <div id="hidemenu">
                     <div id="userstuff">
@@ -417,7 +417,7 @@ if (isset($_FILES["userImage"])){
                         </div>
                         <div id="usrimg">
                             <form method="post" id="imageForm" name="imageForm" enctype="multipart/form-data">
-                                <img id="usrimage" src=<?="'".$_SESSION["user"]["usrImage"]."'"?> alt="user image">
+                                <img id="usrimage" src=<?="'".$_SESSION["user"]["userImage"]."'"?> alt="user image">
                                 <label for="userImage"></label>
                                 <input accept="image/" type="file" name="userImage" id="userImage">
                             </form>

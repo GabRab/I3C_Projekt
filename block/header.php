@@ -63,7 +63,6 @@ function checkImg($image, $filepath="userImages"){
     else echo "<div class='err'> something is wrong <br> error code:".$image["error"]." </div>";
     return $imagePath;
 }
-
 ?>
 
 
@@ -113,11 +112,12 @@ function register($db, $name, $pass){// WORKS although it could get changed to r
     }
 function changeImage($db, $image){//WORKS :D
     if (($imagePath = checkImg($image, "userImages"))!==null){//don't need second parameter here... Just wanna keep it here for some reason... idk
-        $stmt = new Stmt($db, "UPDATE users SET usrImage = ? WHERE userId = ?;"); 
+        $stmt = new Stmt($db, "UPDATE users SET userImage = ? WHERE userId = ?;"); 
         //var_dump($_SESSION);
+        echo "SSSSS";
         $stmt->bind("si", array(&$imagePath, &$_SESSION["user"]["id"]));
         $stmt->exe();
-        $_SESSION["user"]["usrImage"]=$imagePath;
+        $_SESSION["user"]["userImage"]=$imagePath;
     }
     
     header("Location: index.php");
@@ -150,12 +150,42 @@ function editUserS($db, $edit, $value){//change string value
 
 <?php
 //IMAGE STUFF
-function listImages($db, $search="%"){//works, just needs css on the frontend
+function listImages($db, $search="%", $tags=null){//works, just needs css on the frontend
     if ($search!="%") $search = "%".$search."%";//if search is not just % allow for easier searching, else finding someone would be really hard... It's not the best but its atleast something I guess
-    $stmt = new Stmt($db, "SELECT DISTINCT * FROM images WHERE title LIKE ?");
-    $stmt->bind("s", array(&$search));//search according to title (kinda useless with images tho)
+    
+    $statement="SELECT DISTINCT * FROM images WHERE title LIKE ?";
+    $bindTypes = "s";
+    $bindValues = array(&$search);
+    
+    $stmt = new Stmt($db, $statement);
+    if (isset($tags)){//I should've done this with Id's but whatever I guess... What's one more request? (Also I can't actually do it that way because it would show up in the url since it's a get request...)
+        //so I need to 1. get tagIds, 2. put them into a dynamic sql query... shouldn't be that hard... right?
+        $statement = "
+        SELECT * FROM images i
+        JOIN tagConnections tc ON tc.imgId = i.imgId
+        JOIN tags t ON t.tagId = tc.tagId
+        WHERE title LIKE ?
+        ";
+        $bindTypes = "s";
+        foreach($tags["yes"] as $tag){
+            $statement .= "AND t.tagName = ?";
+            $bindTypes.="s";
+            $ref =&$tag;
+            array_push($bindValues, $ref);
+        }
+        foreach($tags["no"] as $tag){
+            $statement .= "AND t.tagName != ?";
+            $bindTypes.="s";
+            $ref =&$tag;
+            array_push($bindValues, $ref);
+        }
+    }
+
+
+    $stmt->bind($bindTypes, $bindValues);//search according to title (kinda useless with images tho)
     $stmt->exe();
     return $stmt->fetch();//no [0] here because its built with that in mind
+    //I just realised that this returns only the image stuff... I could return the tags as well, but that's unnecessary complications.
 }
 function userImages($db, $userId){//returns images of the user for use in displaying the profile I guess?
     $stmt = new Stmt($db, "SELECT * FROM images WHERE userId = ?");//TODO: expand this to accomodate SUM and AVG of different metrics using JOIN ON
@@ -172,7 +202,7 @@ function listImage($db, $imgId){//returns info about image array(info->{user, im
     ");//TODO: expand this to accomodate SUM and AVG of different metrics using JOIN ON
     $stmt->bind("i", array(&$imgId));
     $stmt->exe();
-    $fetch["info"] = $stmt->fetch();
+    $fetch["info"] = $stmt->fetch()[0];
  
     //get tags related to image and put it into array
     $stmt->stmt="
@@ -249,5 +279,31 @@ function unjoinTag($db, $imgId, $tagId){//get tagId and imgId from edit page
     $stmt->exe();
 }
 
+
+?>
+
+
+<?php
+//COMMENT STUFF
+function listComments($db, $imgId){
+    $stmt = new Stmt($db, "
+    SELECT c.*, u.* FROM comments c
+    JOIN users u ON u.userId = c.userId
+    WHERE imgId = ?");
+    $stmt->bind("s", array(&$imgId));
+    $stmt->exe();
+    return $stmt->fetch();
+}
+function createComment($db, $imgId, $text){
+    $stmt = new Stmt($db, "INSERT INTO comments(userId, imgId, comText) VALUES (?, ?, ?)");
+    $stmt->bind("iis", array(&$_SESSION["user"]["userId"], &$imgId, &$text));
+    $stmt->exe();
+    header("Location: image.php?imgId=".$imgId);
+}
+function deleteComment($db, $comId){
+    $stmt = new Stmt($db, "DELETE FROM comments WHERE comId = ?");
+    $stmt->bind("i", array(&$comId));
+    $stmt->exe();
+}
 
 ?>

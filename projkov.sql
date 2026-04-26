@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 19, 2026 at 09:07 PM
+-- Generation Time: Apr 26, 2026 at 08:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `projkov`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `comId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `imgId` int(11) NOT NULL,
+  `comText` varchar(255) NOT NULL,
+  `commDate` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`comId`, `userId`, `imgId`, `comText`, `commDate`) VALUES
+(1, 1, 21, 'asdds', '2026-04-26 18:01:41'),
+(2, 1, 21, 'asdds', '2026-04-26 18:02:11'),
+(4, 1, 21, '123', '2026-04-26 18:11:03'),
+(5, 1, 21, '123', '2026-04-26 18:12:17');
 
 -- --------------------------------------------------------
 
@@ -100,6 +124,12 @@ INSERT INTO `users` (`userId`, `name`, `password`, `userImage`, `telephone`, `em
 --
 
 --
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`comId`);
+
+--
 -- Indexes for table `images`
 --
 ALTER TABLE `images`
@@ -129,6 +159,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `comId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `images`
