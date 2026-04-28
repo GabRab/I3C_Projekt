@@ -84,7 +84,7 @@ foreach($comms as $com){
         <?php
     }
     ?>
-    <p class="userName"><?=$com["name"]?></p>
+    <a href="profile.php?userId=<?=$com["userId"]?>" class="userName"><?=$com["name"]?></a>
     <p class="commentDate"><?=$com["commDate"]?></p>
     <p class="commentText"><?=$com["comText"]?></p>
 </div>

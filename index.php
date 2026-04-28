@@ -58,14 +58,8 @@ if (isset($_POST["addPic"])){
     //if you click on a tag button, it gets added to the 'tags' input and added to a div of selected tags
     //if you click on a tag button while it is in the 'tags' input, it gets added as a NOT (doesn't have that specific tag) though I don't really know how to exactly do that... I would probably have to make a dynamic sql statement ;-; (Its just one if statement tho...) I already have to make a dynamic sql statement anyways.
     //add newly added tags as selected tags into another div as buttons that disappear and remove the tag from tagInput when you click on them
-    function addTagElement(tag){//creates tag element in the tagDiv with tagButton class which is later used in another function.
-        let tagElement = $("#tagDiv").appendChild(document.creatElement("p"));
-        tagElement.addClass("tagButton");
-        tagElement.addClass("tagYes");//for later css to show the status of the tag (blue/green for tagYes, red for tagNo to check if tag is a NOT or normal)
-        tagElement.text(tag);
-    }
     $(document).ready(function(){
-        $(".tag").click(()=>{
+        $("#tagLister .tag").click(()=>{
             let tag = $(this).children[0].text();//get the name of the tag (there shouldn't be any duplicates with how I've built this so far, so it can get used as an ID as well :D)
             let isThere=false;//checks if the tag is already selected
             $("#tagInput").children().foreach((tagI, index)=>{
@@ -73,7 +67,7 @@ if (isset($_POST["addPic"])){
                     isThere = true;
                     if (tagI.getAttribute("name")==="tags[yes]") {
                         tagI.classList.add("tagNo");//css stuff, though I could use toggle... nah this is fine
-                        tagI.classList.remove("tagYes");
+                        tagI.classList.remove("tagYes");//I could just do a .toggle here, but I still need the if else for attributing the name
                         tagI.attr("name", "tags[no]")
                     }
                     else {
@@ -84,7 +78,8 @@ if (isset($_POST["addPic"])){
                 }
             });
             if (!isThere){
-                let input =$("#tagInput").appendChild($("<input>").attr("name", "tags[yes]"));//add input element to tagInput with a name for array use
+                let input =$("#tagInput").appendChild($("<input>");
+                input.attr("name", "tags[yes]"));//add input element to tagInput with a name for array use
                 input.classList.add("tagButton");//add for interactions and base css customization
                 input.classList("tagYes");//change class for css
                 input.val()=tag;//add value
@@ -103,7 +98,41 @@ if (isset($_SESSION["user"])){//form for adding images (should make a different 
     <input type="text" name="text" id="text">
     <input type="file" name="imgFile" id="imgFile">
     <input type="submit" name="addPic" id="addPic">
+    <!-- What I need here: display a list of tags you can assign and add them to this div, similar to the tag search but for creating a picture. I can use -->
+    <div id="tagJoinList">
+    <?php
+        foreach(listTags($db) as $tag){//apologies, I don't think Imma be able to just make tags when you type them in because that's too much work. You have the title for that too, so whatever.
+            ?>
+            <div class="tagJoin">
+                <p class="tagName"><?=$tag["tagName"]?></p>
+                <p class="tagDesc"><?=$tag["tagDesc"]?></p>
+            </div>
+            <?php    
+        }
+            ?>
+    </div>
 </form>
+<script>
+    //if you click on a tag, it lights up and an input is generated into the appropriate array.
+    $(document).ready(function(){
+        $("#tagJoinList .tagJoin").click(()=>{
+            let tag = $(this).children[0].text();
+            if($(this).children[2]!==null){
+                $(this).children[2].remove();
+            }
+            else{
+                let input =$(this).appendChild($("<input>");
+                input.attr("name", "tagsJoin[]"));//add input element to tagInput with a name for array use
+                input.classList.add("tagButton");//add for interactions and base css customization
+                input.classList("tagYes");//change class for css
+                input.val()=tag;//add value
+            }
+        });
+        $(".tagButton").click(()=>{//if click on button, then remove it from tagInput and this
+            $(this).remove();//just removing it is fine
+        })//now that I've changed it from working with a single text input to just adding input elements, it seems to be much easier to work with      
+    })
+</script>
 <?php
 }
 //search results

@@ -119,8 +119,6 @@ function changeImage($db, $image){//WORKS :D
         $stmt->exe();
         $_SESSION["user"]["userImage"]=$imagePath;
     }
-    
-    header("Location: index.php");
 }
 
 function listUsers($db, $string="%"){//list according to searched string
@@ -251,11 +249,12 @@ function listTags($db){//return tags for tag list
     return $stmt->fetch();
 }
 //I just realised(22:57) that I might not need user tags after all... It's already connected with the users and I've decided to make a separate search thingy for images specific for users, so checking if it doesn't equal user is kinda useless
-function addTag($db, $tagName, $tagDesc=''){//add tag if it doesn't exist yet (tagDesc is because of user tags)
-    if ($tagDesc==='') $tagDesc=$tagName;//if no description, then make name the description...
+function addTag($db, $tagName, $tagDesc=null){//add tag if it doesn't exist yet (tagDesc is because of user tags)
+    if ($tagDesc===null) $tagDesc=$tagName;//if no description, then make name the description...
     $stmt = new Stmt($db, "SELECT * FROM tags WHERE tagName = ? AND tagDesc = ?");//tagDesc shows up to explain the tag further, though I'm having second thoughts if it has to be here
     $stmt->bind("ss", array(&$tagName, &$tagDesc));
-    if ($stmt->fetch()[0]!==null){
+    $stmt->exe();
+    if ($stmt->fetch()!==null){
         $stmt->stmt ="INSERT INTO tags(tagName, tagDesc) VALUES (?, ?)";
         $stmt->bind("ss", array(&$tagName, &$tagDesc));
         $stmt->exe();
@@ -272,13 +271,29 @@ function joinTag($db, $imgId, $tag){//joins single tag!
     $stmt->stmt = "INSERT INTO tagConnections(tagId, imgId) VALUES (?, ?)";
     $stmt->bind("ii", array(&$imgId, &$tagId));
     $stmt->exe();
-}
+}//to actually use this, I need the imgId which means another fetch request.
 function unjoinTag($db, $imgId, $tagId){//get tagId and imgId from edit page
     $stmt = new Stmt($db, "DELETE FROM tagConnections WHERE tagId = ? AND imgId = ?");
     $stmt->bind("s", array(&$tag));
     $stmt->exe();
 }
-
+function joinAllTags($db, $tags){//join all tags (gets imgId)
+    $stmt = new Stmt($db, "SELECT imgId FROM images WHERE userId = ? ORDER BY dateAdded DESC LIMIT 1");
+    $stmt->bind("i", array(&$_SESSION["user"]["userId"]));
+    $stmt->exe();
+    $imgId = $stmt->fetch()[0];//mysqli_fetch_all pust everything into an associative array, if it fetches only one thing it still ends up in an array.
+    foreach ($tags as $tag) joinTag($db, $imgId, $tag);
+}
+function editTag($db, $tagId, $tagDesc){
+    $stmt = new Stmt($db, "UPDATE tags SET tagDesc = ? WHERE tagName = ?");
+    $stmt->bind("si", array(&$tagDesc, &$tagId));
+    $stmt->exe();
+}
+function delTag($db, $tagId){
+    $stmt = new Stmt($db, "DELETE FROM tags WHERE tagId = ?");
+    $stmt->bind("i", array(&$tagId));
+    $stmt->exe();
+}
 
 ?>
 

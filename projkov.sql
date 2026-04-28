@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 26, 2026 at 08:19 PM
+-- Generation Time: Apr 28, 2026 at 08:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,6 +91,14 @@ CREATE TABLE `tags` (
   `tagDesc` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `tags`
+--
+
+INSERT INTO `tags` (`tagId`, `tagName`, `tagDesc`) VALUES
+(2, 'tagger', 'tagger'),
+(3, 'tag', 'tag');
+
 -- --------------------------------------------------------
 
 --
@@ -113,7 +121,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userId`, `name`, `password`, `userImage`, `telephone`, `email`, `privileges`, `userCreation`) VALUES
-(1, 'user', '$2y$10$X2/OWpwR50I1lZZt8ctTPOFiDbWQdrC6J7OkGH6LQrqrkDbKKTkYq', 'userImages/69dfded410a88Screenshot_20260322_220942.png', '', '', 0, '2026-04-19'),
+(1, 'user', '$2y$10$X2/OWpwR50I1lZZt8ctTPOFiDbWQdrC6J7OkGH6LQrqrkDbKKTkYq', 'userImages/69dfded410a88Screenshot_20260322_220942.png', '', '', 1, '2026-04-19'),
 (2, 'name', 'pass', '', '', '', 0, '2026-04-19'),
 (3, '123', '$2y$10$IUAgOIYwX2hXMd6vt1b/weggnC7glA5YWH9K5MPs63WTYIq5IBahW', 'userImages/default.png', '123', '123@1', 0, '2026-04-19'),
 (4, '1234', '$2y$10$GULScbA6yrfo5lZPzQvYWeuswfupaxNIlROYPVVNMM3LOjawqwOoy', 'userImages/default.png', '1234', '123@4', 0, '2026-04-19'),
@@ -127,7 +135,9 @@ INSERT INTO `users` (`userId`, `name`, `password`, `userImage`, `telephone`, `em
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
-  ADD PRIMARY KEY (`comId`);
+  ADD PRIMARY KEY (`comId`),
+  ADD KEY `userId` (`userId`),
+  ADD KEY `imgId` (`imgId`);
 
 --
 -- Indexes for table `images`
@@ -141,8 +151,8 @@ ALTER TABLE `images`
 --
 ALTER TABLE `tagConnections`
   ADD PRIMARY KEY (`connId`),
-  ADD KEY `foreing_tag` (`tagId`),
-  ADD KEY `foreing_img` (`imgId`);
+  ADD KEY `img_fk` (`imgId`),
+  ADD KEY `tag_fk` (`tagId`);
 
 --
 -- Indexes for table `tags`
@@ -182,7 +192,7 @@ ALTER TABLE `tagConnections`
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `tagId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tagId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -195,6 +205,13 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`imgId`) REFERENCES `images` (`imgId`);
+
+--
 -- Constraints for table `images`
 --
 ALTER TABLE `images`
@@ -204,8 +221,8 @@ ALTER TABLE `images`
 -- Constraints for table `tagConnections`
 --
 ALTER TABLE `tagConnections`
-  ADD CONSTRAINT `foreing_img` FOREIGN KEY (`imgId`) REFERENCES `images` (`imgId`),
-  ADD CONSTRAINT `foreing_tag` FOREIGN KEY (`tagId`) REFERENCES `tags` (`tagId`);
+  ADD CONSTRAINT `img_fk` FOREIGN KEY (`imgId`) REFERENCES `images` (`imgId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tag_fk` FOREIGN KEY (`tagId`) REFERENCES `tags` (`tagId`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
