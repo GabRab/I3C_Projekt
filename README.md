@@ -58,5 +58,9 @@ gab{
          <p>I also expanded on some other stuff and learnt some nice stuff... PUT THE UPDATES BEFORE GETTING THE LISTINGS IN PHP (it's an issue that I solved today, which broke me last year)</p>
          <p>I wonder when my classmates are going to help me... One said he wants to help with css so I've been putting it off and the other... I dunno he didn't say anything, he just skipped the topic.</p>
 </div>
+<div>
+28.04. - <p>I messed around a bit, fixed some stuff and now you can finally add tags. You might even be able to join them, though that's still not working as well as tag searching (js is a mess)</p>
+        <p>tomorrow I will (hopefully) fix tag searching, fix tag joining... finish some more parts of this and maybe finally get back to css.</p>
+</div>
 }
 </div>
