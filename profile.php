@@ -6,16 +6,28 @@ require "block/header.phtml";
 // get userId using a post from that gets sent when you click on yourself or on a user from users.php
 // get list of statistics about a user (maybe privacy settings too? Later, right now I need this to work...)
 
+if ($_SESSION["user"]["userId"]==$_GET["userId"]){//some authority stuff for editing profile I guess
+    if(isset($_POST["subName"])){
+        editUserS($db, "name", $_POST["username"]);
+    }
+    if (isset($_FILES["userImageP"])){
+        echo"<br>";var_dump($_FILES["userImageP"]);
+        changeImage($db, $_FILES["userImageP"]);
+    }
+    if(isset($_POST["subEmail"])){
+        editUserS($db, "email", $_POST["email"]);
+    }
+}
+
 if (isset($_GET["userId"])){
     $images = userImages($db, $_GET["userId"]);
     $user = getUser($db, $_GET["userId"]);
-    var_dump($images);
+    //var_dump($images);
     var_dump($user);
+    echo"<br>"; var_dump($_SESSION["user"]);
 }
+else echo"<h1>CO TU DELAS PARCHANTE</h1>";
 
-if ($_SESSION["user"]["userId"]==$_GET["userId"]){//some authority stuff for editing profile I guess
-
-}
 
 
 //25.04.2026
@@ -23,33 +35,62 @@ if ($_SESSION["user"]["userId"]==$_GET["userId"]){//some authority stuff for edi
 //I need to add comment
 ?>
 <div id="userSpace">
-    <p><?=$user["name"]?></p>
-    <img src="<?=$user["userImage"]?>">
-    <p><?=$user["userCreation"]?></p><!--date of user account creation-->
-    <?php
-    if ($_GET["userId"]===$_SESSION["user"]["userId"]){//stuff to show only when user (email and telephone number)
+
+        <h3><?=$user["name"]?></h3> 
+        <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?> 
+            <a href="#" id="changeUsername">change name</a>
+            <form action="#" method="post" id="changeInputName" style="display:none">
+                <input type="text" name="username" value="<?=$user["name"]?>">
+                <input type="submit" name="subName">
+            </form>
+        <script>$(document).ready(function(){$("#changeUsername").click(function(){$("#changeInputName").toggle();})})//I love that you can just do this and get yelled at despite it working </script>
+        <?php }?>
+        
+        <?php 
+        if ($user["userId"]===$_SESSION["user"]["userId"]){ 
+        ?> 
+            <form action="#" method="post" enctype="multipart/form-data" id="changeImage" name="changeImage">
+                <label for="userImageP"> <img src="<?=$user["userImage"]?>"> </label>
+                <input accept="image/" style="display:none" type="file" name="userImageP" id="userImageP">
+            </form>
+            <script>$(document).ready(function(){$("#userImageP").change(function(){$("#changeImage").submit();})}) </script>
+        <?php 
+        } 
+        else{ 
         ?>
-        <div id="additionalUserInfo">
-            <p><?=$user["email"]?></p><!--would love to do checks to see if the email is actually theirs by sending them a form they would have to click on, but I'm not sure if I got enough time for that-->
-            <p><?=$user["telephone"]?></p><!--same here-->
+            <img src="<?=$user["userImage"]?>"> 
+        <?php 
+        } 
+        ?>
+
+        <p><?=$user["userCreation"]?></p><!--date of user account creation-->
+        <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?>
+            <form method="post" id="additionalUserInfo">
+                <p><?=$user["email"]?></p>
+                <a href="#" id="changeEmail">change Email</a><!--I could send confirmation emails, but that's a novelty that would get in the way of testing for now-->
+                <div id="changeInputEmail" style="display:none">
+                    <input type="email" name="email" value="<?=$user["email"]?>">
+                    <input type="submit" name="subEmail">
+                    <script>$(document).ready(function(){$("#changeEmail").click(function(){$("#changeInputEmail").toggle();})})</script>
+                </div>
+            </form>
+        <?php }//removed phone numbers, because they're too much and I don't know how to incentivize people to add them without making the UX too limited without them.
+        ?>
+        <!--total statistics here (just add them as subqueries to getUser(), shouldn't be too hard since its just counting the amount of views, likes and dislikes.-->
+        <!--The rest of the statistics could be stuff you're liked before, history is too much data so Imma leave it out, stuff you dislike(dunno why you would want to see stuff that you don't like though)-->
+        <!--folders of images you like would be also interesting, but that's another table...-->
+        <!--Another idea is a customizable background image, but I don't wanna deal with problems like resolution or repeating the image in the background even if its just css because css scares me-->
         </div>
-        <?php
-    }
-    ?>
-</div>
-
-
-
 <div id="imageSpace">
-<?php
+    <?php
 foreach($images as $image){
-    var_dump($image);
     ?>
     <a href="image.php?imgId=<?=$image["imgId"]?>">
-        <p><?=$image["title"]?></p>
-        <p><?=$image["dateAdded"]?></p>
-        <img src="<?=$image["imgFile"]?>">
-    </div>
+        <p class="imageTitle"><?=$image["title"]?></p>
+        <p class="imageDate"><?=$image["dateAdded"]?></p>
+        <img class="imageFile" src="<?=$image["imgFile"]?>">
+        <p class="views"><?=$image["views"]?></p>
+    </div><!-- ADD STATISTICS TO THIS AS WELL LATER WHEN THEY'RE ADDED-->
     <?php
 }
 ?>

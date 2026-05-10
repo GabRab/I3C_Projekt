@@ -5,6 +5,11 @@ if (isset($_POST["createComment"])){
     createComment($db, $_POST["imgId"], $_POST["text"]);//don't think that I can just put the imgId from get here
 }
 if (isset($_POST["del"])) deleteComment($db, $_POST["comId"]);
+if (isset($_POST["editImage"])){
+    echo "<br> NEWTAGS:";var_dump($_POST["editImage"]["newTags"]);
+    echo "<br> OLDTAGS:";var_dump($_POST["editImage"]["oldTags"]);
+    editImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["title"], $_FILES["imgFile"], $_POST["editImage"]["prevImage"], isset($_POST["editImage"]["newTags"])?$_POST["editImage"]["newTags"]:array(), isset($_POST["editImage"]["oldTags"])?$_POST["editImage"]["oldTags"]:array());
+} 
 //REMEMBER: POST AND GET STUFF NEEDS TO BE BEFORE LIST STUFF
 $image = listImage($db, $_GET["imgId"]);
 $comms = listComments($db, $_GET["imgId"]);
@@ -39,10 +44,79 @@ image = {
     }
 }
 */
-var_dump($image);
+//var_dump($image);
+
+//LATER: ADD A BUTTON TO REVEAL THIS WITH JS (just a query to toggle the form, nothing hard tbh.)
+if (isset($_SESSION["user"])&&$_SESSION["user"]["userId"]===$image["info"]["userId"]){
+?>
+    <form action="#" method="POST" enctype="multipart/form-data">
+        <input type="text" value="<?=$image["info"]["title"]?>" name="editImage[title]" id="text">
+        <input type="file" name="imgFile" id="imgFile">
+        <input type="hidden" name="editImage[imgId]" value="<?=$image["info"]["imgId"]?>">
+        <input type="hidden" name="editImage[prevImage]" value="<?=$image["info"]["imgFile"]?>">
+        <div id="tagStuff">
+            <?php
+            foreach($image["tags"] as $tag){//these are hidden inputs that show the initial tags used during editImage
+            ?>
+                <input type="hidden" name="editImage[oldTags][]" value="<?=$tag["tagName"]?>">
+            <?php
+            }
+            ?>
+            <div id="tagJoinInput" style="background:green">
+            <?php
+            foreach($image["tags"] as $tag){//these are the ones that actually change, add JS for it at some point later.
+                ?>
+                <div class="tagJoin">
+                    <a href="#" class="tagName"><?=$tag["tagName"]?></a>
+                    <a href="#" class="tagDesc"><?=$tag["tagDesc"]?></a>
+                    <input class="tagVal" type="hidden" value="<?=$tag["tagName"]?>" name="editImage[newTags][]">
+                </div>
+            <?php
+            }
+            ?>
+            </div>
+            <div id="tagList" style="background:blue">
+                <?php
+                $tags = listTags($db);
+
+                foreach($image["tags"] as $tag) for($i=0; $i<count($tags); $i++) $tags[$i]=array_diff($tags[$i], $tag);//this gets rid of items in arrays (array_diff doesn't work on multi-dimensional arrays)
+                foreach($tags as $key=>$tag){
+                    if(count($tag)===0)unset($tags[$key]);
+                }//this gets rid of the resulting empty arrays
+                foreach($tags as $tag){
+                ?>
+                <div class="tagJoin">
+                    <a href="#" class="tagName"><?=$tag["tagName"]?></a>
+                    <a href="#" class="tagDesc"><?=$tag["tagDesc"]?></a>
+                    <input class="tagVal" type="hidden" value="<?=$tag["tagName"]?>" name="editImage[NO][]">
+                </div>
+                <?php
+
+                }
+                ?>
+            </div>
+        </div>
+        <input type="submit" value="edit image" name="editImage[sub]">
+    </form>
+    <script>
+        //so, what I'm thinking is switching the tags between the tagList and tagInput because having the tags stay in the tagList is a bit too many tags (I hate myself)
+        //this often results in stuff losing their index and ending on the back. Imma fix this by just appending them to the beginning instead, its not great, but its something.
+        $(document).on("click", "#tagList .tagJoin", function(){
+            $(this).prependTo("#tagJoinInput");
+            $(this).children("input").attr("name", "editImage[newTags][]");
+            console.log("moved tag to active tags");
+        })
+        $(document).on("click", "#tagJoinInput .tagJoin", function(){
+            $(this).prependTo("#tagList");
+            $(this).children("input").attr("name", "editImage[NO][]");
+            console.log("moved tag to list");
+        })
+    </script>
+<?php
+}
 ?>
 <div><!--ADD CSS TO THIS-->
-    <p><?=$image["info"]["title"];?></p>
+    <p><?=$image["info"]["title"]?></p>
     <p><?=$image["info"]["dateAdded"]?></p>
     <a href="profile.php?userId=<?=$image["info"]["userId"]?>"><?=$image["info"]["name"]?></a>
     <img src="<?=$image["info"]["imgFile"]?>">

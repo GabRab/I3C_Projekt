@@ -10,7 +10,7 @@ if (isset($_POST["subDelTag"])){//deleting tags could cause a whole array of pro
 
 
 if (isset($_SESSION["user"])){
-    if ($_SESSION["user"]["privileges"]>=1){//a user has to add an email to his account to change tags. This doesn't stop trolls, but it at least deters bots.
+    if ($_SESSION["user"]["privileges"]>0){//a user has to add an email to his account to change tags. This doesn't stop trolls, but it at least deters bots.
     //this is mainly because tags are annoying to make, so you might at least give it to the community to do.
     ?>
     <form action="" method="POST">
@@ -21,18 +21,23 @@ if (isset($_SESSION["user"])){
         <?php
     }
 }
-
+?>
+<div id="tags">
+<?php
 $tags = listTags($db);
 foreach($tags as $tag){
-    var_dump($tag);
-    if ($_SESSION["user"]["privileges"]>=1){
-    ?>
-    <form action="" method="POST">
-        <input type="hidden" value="<?=$tag["tagId"]?>" name="tagDelId">
-        <input type="submit" value="delete tag" name="subDelTag">
-    </form>
-    <?php
-    }
-}
-
 ?>
+    <a class="tag" href="index.php?search=&tags%5Byes%5D%5B%5D=<?=$tag["tagName"]?>">
+        <p class="tagName"><?=$tag["tagName"]?></p>
+        <p class="tagDesc"><?=$tag["tagDesc"]?></p>
+
+    <?php if (isset($_SESSION["user"])&&$_SESSION["user"]["privileges"]>1){?>
+        <form action="" method="POST">
+            <input type="hidden" value="<?=$tag["tagId"]?>" name="tagDelId">
+            <input type="submit" value="delete tag" name="subDelTag">
+        </form>
+    <?php }//It's ugly, but the amount of lines is driving me nuts! ?>
+    
+</a>
+<?php }?>
+</div>
