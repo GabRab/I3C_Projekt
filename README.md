@@ -62,6 +62,47 @@ gab{
 28.04. - <li>I messed around a bit, fixed some stuff and now you can finally add tags. You might even be able to join them, though that's still not working as well as tag searching (js is a mess)</li>
         <li>tomorrow I will (hopefully) fix tag searching, fix tag joining... finish some more parts of this and maybe finally get back to css.</li>
 </ul>
+<p>everything after this point was added 10.05. because I didn't have time to send it every day, more info can be found in index.php where I initially make my notes before putting them here</p>
+<ul>
+01.05. - <li>tried to fix tag Js</li>
+        <li>added jquery file</li>
+        <li>changed sql so that tagName is unique because multiple definitions is a nightmare</li>
+</ul>
+<ul>
+02.05. - <li>fixed JS from yesterday (it was due to being in$(document).ready())</li>
+</ul>
+<ul>
+03.05. - <li>fixed adding tags to images, both js and php</li>
+        <li>added part where tags reset using JS</li>
+        <li>fixed a typo in php variable name which took me 1/2 hour</li>
+        <li>there's still an issue with listImages(), but its too late right now</li>
+</ul>
+<ul>
+04.05. - <li>fixed listImages(), it can now search with tags</li>
+        <li>added editing tags on images (JS still missing though)</li>
+</ul>
+<ul>
+07.05. - <li>light repairs in image.php</li>
+        <li>added isset() conditions to prevent useless error messages about null values</li>
+        <li>got stuck at editImage again... its 22:21 and keeps throwing binding errors along with general jank</li>
+</ul>
+<ul>
+08.05. - <li>fixed tag editing on image.php (I woke up and did it immediately 11:30-12:00)</li>
+        <li>went to visit my grandma, so I couldn't work on it much</li>
+</ul>
+<ul>
+09.05. - <li>finally changed $stmt->bind() so that it doesn't look bad whenever I use it</li>
+</ul>
+<ul>
+10.05. - <li>fixed yesterday's solution because it still kept throwing errors (it actually works now)</li>
+        <li>a bit of restructuring (changed block/header.php to back/functions.php, created a standalone header.css to make header.phtml less scary)</li>
+        <li>changed a bit of sql(just added ON CASCADE to comments and views counter to images)</li>
+        <li>fixed a bunch of stuff that broke due to previous changes(mainly changeImage() because it kept referencing a variable whose name I changed)</li>
+        <li>added editing to profile.php (image, username, mail)</li>
+        <li>image views are shown in profile.php, plan on adding it later to image.php</li>
+        <li>I also plan on adding likes/dislikes, though thats a whole table and a bunch of functions that I don't want to make because forms reset the page. I'll see if I have the time to mess around with this considering my biggest foe (css) is still present</li>
+</ul>
+<p>This is the end of stuff added at 10.05. Once again I implore you to check index.php for further explanations about stuff. It's 21:10 already again, so Imma go do something else now.</p>
 }
 </div/Today I tried to fix the tag js... it didn't work. WHY DOESN'T IT WORK???? I GOT STUCK AT GETTING THE tagName SO I COULDN'T EVEN GET TO THE CONFUSING STUFF!!
 //I've been stuck on this for another buncha hours. I dunno why it doesn't work. I did download jquery-4.0.0.js because I was tired of the>
