@@ -103,6 +103,7 @@ gab{
         <li>I also plan on adding likes/dislikes, though thats a whole table and a bunch of functions that I don't want to make because forms reset the page. I'll see if I have the time to mess around with this considering my biggest foe (css) is still present</li>
 </ul>
 <p>This is the end of stuff added at 10.05. Once again I implore you to check index.php for further explanations about stuff. It's 21:10 already again, so Imma go do something else now.</p>
+<p>ALSO If you see empty images somewhere, that's not a bug, I'm just too tired to deal with that since downloading so many files is a hassle.</p>
 }
 </div/Today I tried to fix the tag js... it didn't work. WHY DOESN'T IT WORK???? I GOT STUCK AT GETTING THE tagName SO I COULDN'T EVEN GET TO THE CONFUSING STUFF!!
 //I've been stuck on this for another buncha hours. I dunno why it doesn't work. I did download jquery-4.0.0.js because I was tired of the>
