@@ -65,7 +65,7 @@ gab{
 <p>everything after this point was added 10.05. because I didn't have time to send it every day, more info can be found in index.php where I initially make my notes before putting them here</p>
 <ul>
 01.05. - <li>tried to fix tag Js</li>
-        <li>added jquery file</li>
+        <li>added jquery file due to delays from fetching it online</li>
         <li>changed sql so that tagName is unique because multiple definitions is a nightmare</li>
 </ul>
 <ul>
@@ -104,6 +104,25 @@ gab{
 </ul>
 <p>This is the end of stuff added at 10.05. Once again I implore you to check index.php for further explanations about stuff. It's 21:10 already again, so Imma go do something else now.</p>
 <p>ALSO If you see empty images somewhere, that's not a bug, I'm just too tired to deal with that since downloading so many files is a hassle.</p>
+
+<p> stuff added at 20.05.</p>
+<ul>
+16.05. - <li>added deletion button to images</li>
+         <li>figured out how to properly utilise the action attribute and fixed an issue with it</li>
+</ul>
+<ul>
+17.05. - <li>Small fixes and changes</li>
+         <li>found problems during testing (editing an image causes the current page to turn into a submission page, meaning you can't really go back when you do that)(searching with tagNo gives no imgId)</li>
+</ul>
+<ul>
+19.05. - <li>fixed the imgId problem, a rookie sql request mistake</li>
+         <li>theorising about how to fix the other issue </li>
+</ul>
+<ul>
+20.05. - <li>completing the privilege implementation</li>
+         <li>testing and fixing stuff</li>
+         <li>removing images leftover from when the files weren't deleted with deletion in the database</li>
+</ul>
+<p>end of stuff added at 20.05. I might make a dedicated file for these logs later because I simply don't like the look of README.md right now.</p>
 }
-</div/Today I tried to fix the tag js... it didn't work. WHY DOESN'T IT WORK???? I GOT STUCK AT GETTING THE tagName SO I COULDN'T EVEN GET TO THE CONFUSING STUFF!!
-//I've been stuck on this for another buncha hours. I dunno why it doesn't work. I did download jquery-4.0.0.js because I was tired of the>
+</div>
