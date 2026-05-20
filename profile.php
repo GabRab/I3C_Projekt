@@ -26,7 +26,7 @@ if (isset($_GET["userId"])){
     var_dump($user);
     echo"<br>"; var_dump($_SESSION["user"]);
 }
-else echo"<h1>CO TU DELAS PARCHANTE</h1>";
+else echo"<h1>CO TU DELAS PARCHANTE</h1>";//easter egg for those who want to mess with the url
 
 
 
@@ -35,7 +35,17 @@ else echo"<h1>CO TU DELAS PARCHANTE</h1>";
 //I need to add comment
 ?>
 <div id="userSpace">
-
+<?php
+if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
+    ?>
+    <form action="index.php" method="post">
+        <input type="hidden" name="delUser[userId]" value="<?=$user["userId"]?>"><!--I know I could just have the id be in the submit input value, but that would mean that the submit text itself is the id :(-->
+        <input type="submit" value="delete user" name="delUser[Sub]">
+        <?php foreach($images as $image){ ?> <input type="hidden" name="delUser[images][]" value=<?=$image["imgFile"]?>> <?php } ?>
+    </form>
+    <?php
+}
+?>
         <h3><?=$user["name"]?></h3> 
         <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?> 
             <a href="#" id="changeUsername">change name</a>

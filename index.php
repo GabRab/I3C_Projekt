@@ -69,13 +69,53 @@
 //               amount of times an image was displayed in image.php which is displayed under images, needs css to look good though.
 //I'm tired, cuz its 20:32 and I've been doing this pretty much the whole day. I dunno what's tomorrow so I gotta have at least a bit of prep time.
 
+//16.05.2026 I took a break for school... not a good excuse but whatever
+//added deletion button to images so that I can remove some of the useless testing images and hopefully decrease the amount of useless files I put on the repository. (it worked 1st try :D)
+//failed to find out how to redirect after output
+//tried the same thing with register(), but that didn't work either. Oh well. I remember having a lot of trouble with this before, so I'm scared I'll waste another few tens of hours on this instead of doing any progress.
+//though it would be better if I could send the thing to index.php and then deal with it.
+//so far my ideas are as follows:
+//put an action attribute and send it to be processed in index.php, this could work, though I'm not sure about this.
+//IT WORKED
+//I also did the same for register, though I'm gonna move both into header.phtml due to the need to update before listing something
+//so what's left? css, privilege implementation, checking everything actually works, placeholder items(just putting in data for the tags and images so its not just an empty page)
+
+//17.05.2026 Small changes and fixes I find while testing.
+//now I just gotta do the stuff mentioned yesterday and fix the mess that is header.phtml
+//problem: when you edit an image it uses a post so if you edit an image you can't go back without form resubmissions. This is bad.
+//with each new post it goes to a new page, which means that you can't really go back. I could make it go back to index.php but that's inconvenient and just making it go back on itself just does nothing, so idk.
+//I also need to get to header.phtml and make the user thing redirect to your own page.
+//problem: when you search for everything without tags(tagNo) the search works but you don't get their ids so the redirect to image.php doesn't.
+
+//19.05.2026 the second problem found on 17.05.2026(no imgId on tagNo search) was due to using * durin a joined select, causing the assoc array to have multiple things reffered to as "imgId". Fixed by just using i.* instead. A beginner mistake.
+//I still haven't come up with a solution for the first problem found on 17.05.2026 though. I wish there was one though.
+//I can't think of any, since during the submission of a form you always turn the page into something that sends data and go to the one mentioned in action. You can't just do it without that submission page, nor can you really remove it... can you?
+//What if I just... do a js script that sends you back 2 pages after you edit. That could theoretically work. BUT it would cause there to just be random "oh you can go forward here for some reason" which is BAD.
+//Best I can do is just send the user somewhere else afterwards to mask the fact that you even changed pages. So it would be something like: 
+// form_send->page turns to submission page and sends you to action="" -> window.history.back(2) sends you to index? (I'll figure it out later I guess?) -> gets sent to image again.
+//Okay, so its history.go(-2) and it sends me to index.php, but I need to somehow also get back to image.php with the correct id without having to click on it again.
+//I could have a form, but there is no way to actually do that since forms just send you somewhere again...
+//OR I could do some trickery, where I send the user to ANOTHER page when he edits the image.
+//something like image.php -> edit.php -> action="" -> history.go(-2) which COULD work BUT STILL THERE'S THAT FORWARD. (so, just something similar to a register page? How can one be this stupid.)
+//I guess I'll just ignore this issue for now :(
+
+//20.05.2026 I feel the progress has been quite lacking the past couple of days, so today I'm gonna actually do something
+//What's on the agenda today?
+//-privilege implementation (just a bunch of if statements) - DONE I think? The only 
+//-more testing durning that
+//-adding more placeholder items during testing
+//Current progress:
+//-privilege implementation{user deletion, image deletion, tags deletion was already there. I could add a part where the image is retained but thats more of a social site thing...}
+//-testing{fixing stuff, removing unnecessary images}
+//-adding more placeholder items{I deleted them during testing :( }
 include "block/header.phtml";
 
-
+if (isset($_POST["editImage"]["del"])) delImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["prevImage"]);
 if (isset($_POST["addPic"])){
     addImage($db, $_POST["text"], $_FILES["imgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
     joinAllTags($db, $_POST["tags"]["join"]);
 }
+var_dump($_SESSION);
 ?>
 <style>
     .tagNo{

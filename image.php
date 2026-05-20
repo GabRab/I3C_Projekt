@@ -6,13 +6,22 @@ if (isset($_POST["createComment"])){
 }
 if (isset($_POST["del"])) deleteComment($db, $_POST["comId"]);
 if (isset($_POST["editImage"])){
-    echo "<br> NEWTAGS:";var_dump($_POST["editImage"]["newTags"]);
-    echo "<br> OLDTAGS:";var_dump($_POST["editImage"]["oldTags"]);
-    editImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["title"], $_FILES["imgFile"], $_POST["editImage"]["prevImage"], isset($_POST["editImage"]["newTags"])?$_POST["editImage"]["newTags"]:array(), isset($_POST["editImage"]["oldTags"])?$_POST["editImage"]["oldTags"]:array());
-} 
+    echo "<br> NEWTAGS:";if (isset($_POST["editImage"]["newTags"]))var_dump($_POST["editImage"]["newTags"]);
+    echo "<br> OLDTAGS:";if (isset($_POST["editImage"]["oldTags"]))var_dump($_POST["editImage"]["oldTags"]);
+    echo "<br>";var_dump($_POST["editImage"]);
+
+    //scrapped idea
+    ?>
+    <script> //history.go(-2); </script>
+<?php
+    if ($_POST["editImage"]["del"]==="delete") delImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["prevImage"]);
+    else editImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["title"], $_FILES["imgFile"], $_POST["editImage"]["prevImage"], isset($_POST["editImage"]["newTags"])?$_POST["editImage"]["newTags"]:array(), isset($_POST["editImage"]["oldTags"])?$_POST["editImage"]["oldTags"]:array());
+}
+echo"<br>";if (isset($_POST["editImage"]))var_dump($_POST["editImage"]);
 //REMEMBER: POST AND GET STUFF NEEDS TO BE BEFORE LIST STUFF
 $image = listImage($db, $_GET["imgId"]);
 $comms = listComments($db, $_GET["imgId"]);
+echo"<br>";var_dump($image);
 //how do I get the image details though? Good question... idk.
 //when clicking on image, get redirected to image.php?imgId="?" that's where.
 //wait, is it possible to do ajax like this? That would be AWESOME. 
@@ -52,7 +61,7 @@ if (isset($_SESSION["user"])&&$_SESSION["user"]["userId"]===$image["info"]["user
     <form action="#" method="POST" enctype="multipart/form-data">
         <input type="text" value="<?=$image["info"]["title"]?>" name="editImage[title]" id="text">
         <input type="file" name="imgFile" id="imgFile">
-        <input type="hidden" name="editImage[imgId]" value="<?=$image["info"]["imgId"]?>">
+        <input type="hidden" name="editImage[imgId]" value="<?=$image["info"]["imgId"]?>"><!--probably not a good idea to have these here since anyone can check the html, though since its the user it should be fine I guess-->
         <input type="hidden" name="editImage[prevImage]" value="<?=$image["info"]["imgFile"]?>">
         <div id="tagStuff">
             <?php
@@ -98,6 +107,11 @@ if (isset($_SESSION["user"])&&$_SESSION["user"]["userId"]===$image["info"]["user
         </div>
         <input type="submit" value="edit image" name="editImage[sub]">
     </form>
+    <form action="index.php" method="POST">
+        <input type="hidden" name="editImage[imgId]" value="<?=$image["info"]["imgId"]?>">
+        <input type="hidden" name="editImage[prevImage]" value="<?=$image["info"]["imgFile"]?>">
+        <input type="submit" value="delete" name="editImage[del]">
+    </form>
     <script>
         //so, what I'm thinking is switching the tags between the tagList and tagInput because having the tags stay in the tagList is a bit too many tags (I hate myself)
         //this often results in stuff losing their index and ending on the back. Imma fix this by just appending them to the beginning instead, its not great, but its something.
@@ -113,6 +127,18 @@ if (isset($_SESSION["user"])&&$_SESSION["user"]["userId"]===$image["info"]["user
         })
     </script>
 <?php
+} else if ($_SESSION["user"]["privilege"]>1){//reminder 0=user without email, 1=user with email, 2=moderator, 3=admin, 4=owner  Most of these are useless because they require more code to function
+    //I wanted moderators to be only able to update images into "REMOVED DUE TO: bad" but that sounds like a bother.
+    //user without email can only comment and add images (I would add a time limit but that also seems like a bother)
+    //email user can add tags
+    //moderators can edit and remove tags and remove images
+    //admins can remove users and images and tag stuff
+    //owner can do all, but can also delete admins
+    ?>
+        <form action="index.php" method="post">
+            <input type="submit" value="editImage[del]">
+        </form>
+    <?php
 }
 ?>
 <div><!--ADD CSS TO THIS-->

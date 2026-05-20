@@ -7,4 +7,6 @@
         exit;
     }
     mysqli_set_charset($db, "utf8mb4")
+
+    //I wonder... do I actually need this here? Probably better than changing it I guess.
 ?>

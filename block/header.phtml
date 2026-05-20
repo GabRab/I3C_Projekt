@@ -1,25 +1,18 @@
 <?php
 require "back/init.php";
 require "back/functions.php";
-//var_dump($_SERVER);
-if (!isset($_COOKIE["first"]))setcookie("first", "true");//nastavit cookie ktery oznamuje ze jsi prisel poprve. Uzitecne pro oznamovani o cookies a dalsi jine vecicky.
-if (isset($_SESSION["user"])){//podiva se jestli je prihlaseny uzivatel
-    var_dump($_SESSION["user"]);
-}
+if (!isset($_COOKIE["first"]))setcookie("first", "true");//check first entry, if first time entry... uhh... idk.
+if (isset($_POST["submitReg"]) && $_POST["pass"] === $_POST["pass2"]) register($db, $_POST["name"], $_POST["pass"]);//register
 
-echo "SUT";
-if (isset($_POST["submitLog"])){
-    login($db, $_POST["username"], $_POST["password"]);
-}
+if (isset($_POST["submitLog"])) login($db, $_POST["username"], $_POST["password"]);//login
 if (isset($_POST["logout"])){
     unset($_SESSION["user"]);
-    header("location: index.php");
-}
-if (isset($_FILES["userImage"])){
-    
-    changeImage($db, $_FILES["userImage"]);
-    //change image function here
-}
+    header("location: index.php");//it seems that I've accidentally made this thing work here before, huh.
+}//logout
+if (isset($_FILES["userImage"])) changeImage($db, $_FILES["userImage"]);//change image function here
+if (isset($_POST["delUser"])) delUser($db, $_POST["delUser"]["userId"], $_POST["delUser"]["images"]);
+
+var_dump($_SERVER);
 
 ?>
 <!DOCTYPE html>
@@ -56,6 +49,7 @@ if (isset($_FILES["userImage"])){
             <a id="log" href="#">login</a>
 
             <a id="reg" href="reg.php">register</a>
+
             <div id="settings"><!--settings here-->
                 <div id="setButton"><div class="inset themeSelect"></div></div>
                 <div id="themes">
@@ -72,7 +66,7 @@ if (isset($_FILES["userImage"])){
         ?>  
             <div id="nameplate">
                 <div id="minimenu">
-                    <div id="username"><?= $_SESSION["user"]["name"]?></div>
+                    <a id="username" href="profile.php?userId=<?= $_SESSION["user"]["userId"]?>"><?= $_SESSION["user"]["name"]?></a>
                     <div><img id="image" src=<?="'".$_SESSION["user"]["userImage"]."'"?> alt="user image"></div>
                 </div>
                 <div id="hidemenu">

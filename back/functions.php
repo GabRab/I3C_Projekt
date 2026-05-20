@@ -110,7 +110,7 @@ function register($db, $name, $pass){// WORKS although it could get changed to r
         return 0;
     };
     //add the account to database
-    $stmt->stmt ="INSERT INTO users(name, password, image) VALUES (?, ?, ?);";//set the statement 
+    $stmt->stmt ="INSERT INTO users(name, password, userImage) VALUES (?, ?, ?);";//set the statement 
     $hashedPass =password_hash($pass, PASSWORD_BCRYPT);
     $imagePath = "userImages/default.png";
     $stmt->bind("sss", array($name, $hashedPass, $imagePath));//bind the params
@@ -129,7 +129,7 @@ function changeImage($db, $image){//WORKS :D
         echo "SSSSS";
         $stmt->bind("si", array($imagePath, $_SESSION["user"]["userId"]));
         $stmt->exe();
-        unlink($_SESSION["user"]["userImage"]);
+        if ($_SESSION["user"]["userImage"]!=="userImages/default.png") unlink($_SESSION["user"]["userImage"]);//needs to be an if here, else the default would get deleted (I'm glad I realised this before it happened)
         $_SESSION["user"]["userImage"]=$imagePath;
     }
 }
@@ -148,12 +148,20 @@ function getUser($db, $userId){//get everything about a single user (maybe I cou
 }
 //10.05.2026 Why is there a modular editing here??? I probably don't need this stuff, but whatever... I guess I just wanted to not waste too much time copying stuff and combined them into a single function even if its bad practice
 //add editing stuff
-function editUserS($db, $edit, $value){//change string value
-    $stmt = new Stmt($db, "UPDATE users SET ".$edit." = ? WHERE userId = ?");
+function editUserS($db, $edit, $value){//change string value (if email, update privilege to user with email)
+    $stmt = new Stmt($db, "UPDATE users SET ".$edit." = ?".(($edit==="email")?", privileges = 1 ":" ")." WHERE userId = ?");
     $stmt->bind("si", array($value, $_SESSION["user"]["userId"]));
     $stmt->exe();
+    $_SESSION["user"][$edit]=$value;
 }
+function delUser($db, $id, $imgFiles){
+    foreach($imgFiles as $i) unlink($i);//deletes all images belonging to user from the storage
 
+    //deletes user (I put ON DELETE CASCADE on everything, so this is enough)
+    $stmt= new Stmt($db, "DELETE FROM users WHERE userId = ?");
+    $stmt->bind("i", $id);
+    $stmt->exe();
+}
 //change privilige level later as well when email or phone number is added
 ?>
 
@@ -187,7 +195,7 @@ function listImages($db, $search=null, $tags=null){//works, just needs css on th
 
     if (isset($tags)){
         $statement = "
-        SELECT * FROM images i
+        SELECT i.* FROM images i
         LEFT JOIN tagConnections tc ON tc.imgId = i.imgId
         LEFT JOIN tags t ON t.tagId = tc.tagId
         WHERE title LIKE ?
@@ -271,7 +279,7 @@ function editImage($db, $imgId, $title, $image, $prevImage, $newTags, $oldTags){
     else if(($imgPath =checkImg($image, "images"))!==null){
         //I need to delete the previous image though... I can probably just do it later, but that would feel wrong sooo Imma add it into this function to keep it together
         $stmt = new Stmt($db, "UPDATE images SET title = ?, imgFile = ? WHERE imgId = ?");
-        $stmt->bind("iss", array($title, $imgPath, $imgId));
+        $stmt->bind("ssi", array($title, $imgPath, $imgId));
         $stmt->exe();
         unlink($prevImage);
     }
@@ -369,7 +377,7 @@ function delImage($db, $imgId, $imgFile){
     $stmt = new Stmt($db, "DELETE FROM images WHERE imgId = ?");//since I added cascading stuff, everything should go with it as well... except comments... I forgot about those
     $stmt->bind("i", $imgId);
     $stmt->exe();
-    unlink($imgFile);
+    unlink($imgFile);//works perfectly :)
 }
 //maybe after that comments under images, likes, views, idk?
 //don't make a tag search system, don't make rule34, don't... bad thoughts
@@ -421,9 +429,9 @@ function unjoinTag($db, $imgId, $tagId){//this is useless because I put an ON DE
     $stmt->bind("s", $tag);
     $stmt->exe();
 }
-function editTag($db, $tagId, $tagDesc){
+function editTag($db, $tagName, $tagDesc){
     $stmt = new Stmt($db, "UPDATE tags SET tagDesc = ? WHERE tagName = ?");
-    $stmt->bind("si", array($tagDesc, $tagId));
+    $stmt->bind("ss", array($tagDesc, $tagName));
     $stmt->exe();
 }
 function delTag($db, $tagId){
