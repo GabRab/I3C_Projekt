@@ -152,11 +152,11 @@ if (isset($_SESSION["user"])&&$_SESSION["user"]["userId"]===$image["info"]["user
 //it would be really cool if they just got added to a search tab, so that you could search for multiple images with the same tags at once
 foreach($image["tags"] as $tag){
     ?>
-    <div class="tag"><!--USE JQUERY FOR INTERACTIONS HERE LATER-->
+    <a href="index.php?search=&tags%5Byes%5D%5B%5D=<?=$tag["tagName"]?>" class="tag"><!--USE JQUERY FOR INTERACTIONS HERE LATER-->
         <p class="tagName"><?=$tag["tagName"]?></p><!--this is the main text that shows up with the tag body-->
         <p class="tagDesc"><?=$tag["tagDesc"]?></p><!--this doesn't actually show up, only when you hover over it kinda like a tooltip-->
         <p style="display:none"><?=$tag["tagId"]?></p><!--maybe for later use, I dunno.-->
-    </div>
+    </a>
     <?php
 }
 if (isset($_SESSION["user"])){

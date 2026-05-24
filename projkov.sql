@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 20, 2026 at 07:45 PM
+-- Generation Time: May 24, 2026 at 06:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,10 +40,6 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`comId`, `userId`, `imgId`, `comText`, `commDate`) VALUES
-(1, 1, 21, 'asdds', '2026-04-26 18:01:41'),
-(2, 1, 21, 'asdds', '2026-04-26 18:02:11'),
-(4, 1, 21, '123', '2026-04-26 18:11:03'),
-(5, 1, 21, '123', '2026-04-26 18:12:17'),
 (8, 1, 26, 'ass', '2026-05-03 17:03:49');
 
 -- --------------------------------------------------------
@@ -66,11 +62,11 @@ CREATE TABLE `images` (
 --
 
 INSERT INTO `images` (`imgId`, `userId`, `imgFile`, `title`, `dateAdded`, `views`) VALUES
-(21, 1, 'images/69dd2c9f78550Screenshot_20251116_003103.png', '123', '2026-04-15 20:24:21.952628', 7),
-(22, 1, 'images/6a09cd870faedbush.png', 'ader', '2026-04-15 21:01:46.831750', 70),
-(25, 1, 'images/69f7677d514c8Music.webp', '1222', '2026-05-03 17:19:25.333636', 14),
-(26, 1, 'images/69f7699089a18icon.webp', '0', '2026-05-03 17:28:16.564221', 1),
-(33, 1, 'images/69f898d1b4afaheadmore.gif', 'start ending me', '2026-05-03 17:39:58.236039', 4);
+(22, 1, 'images/6a09cd870faedbush.png', 'ader', '2026-04-15 21:01:46.831750', 77),
+(25, 1, 'images/69f7677d514c8Music.webp', '1222', '2026-05-03 17:19:25.333636', 19),
+(26, 1, 'images/69f7699089a18icon.webp', '0', '2026-05-03 17:28:16.564221', 4),
+(33, 1, 'images/69f898d1b4afaheadmore.gif', 'start ending me', '2026-05-03 17:39:58.236039', 7),
+(56, 1, 'images/6a131f6e1e66fdoc.png', 'asda', '2026-05-24 17:55:26.124786', 2);
 
 -- --------------------------------------------------------
 
@@ -89,10 +85,11 @@ CREATE TABLE `tagConnections` (
 --
 
 INSERT INTO `tagConnections` (`connId`, `imgId`, `tagId`) VALUES
-(104, 21, 3),
-(105, 21, 2),
 (106, 22, 2),
-(109, 22, 3);
+(109, 22, 3),
+(110, 26, 6),
+(111, 26, 9),
+(112, 26, 3);
 
 -- --------------------------------------------------------
 
@@ -112,7 +109,12 @@ CREATE TABLE `tags` (
 
 INSERT INTO `tags` (`tagId`, `tagName`, `tagDesc`) VALUES
 (2, 'tagger', 'tagger'),
-(3, 'tag', 'tag');
+(3, 'tag', 'tag'),
+(5, 'animation', 'animation'),
+(6, 'anime', 'anime'),
+(8, 'fanart', 'art made in someone\'s image'),
+(9, 'pixel art', 'a specific art style focused on pixelated graphics and retro art styles'),
+(10, 'retro', 'an art style mimicking that of the past ');
 
 -- --------------------------------------------------------
 
@@ -198,19 +200,19 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `images`
 --
 ALTER TABLE `images`
-  MODIFY `imgId` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `imgId` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `tagConnections`
 --
 ALTER TABLE `tagConnections`
-  MODIFY `connId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `connId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `tagId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `tagId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`

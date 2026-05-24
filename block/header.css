@@ -1,23 +1,22 @@
 :root{
-    --primary:rgb(250, 247, 240);
-    --secondary: rgb(59, 59, 59);
-    --theme: rgb(230, 88, 32);
-    --themeOrg: rgb(209, 76, 23);
-    --themeBlu: rgb(98, 117, 180);
-    --themePur: rgb(142, 140, 216);
-    --themeBlo: rgb(89, 102, 145);
-    --themeGre: rgb(100,200,100);
-    --text:rgb(255,255,255);
+    --themeMain: rgb(230, 88, 32);          /* main theme variable */
+    --themeBackground: rgb(250, 247, 240);   /* main background color */
+    --themeIndent: rgb(209, 76, 23);        /* when a button is pressed or other ways to emphasize an area */
+    --themeHover: rgb(142, 140, 216);       /* stuff like when hovering over buttons */
+    --themeGre: rgb(100,200,100);           /* green used during login */
+    --themeText: rgb(0, 0, 0);           /* text color */
+    --themeNavText: rgb(255,255,255);
 }
-nav{
+nav{/* why is there a margin that doesn't show up? I hate css*/
     position:absolute;
-    top:0%;
-    left:0%;
+    top:0px;
+    left:0px;
     width:100%;
+    margin:0px 0px 0px 0px;
     height:2.5rem;
     padding-top:0.2rem;
     padding-bottom:0.1rem;
-    background:var(--theme);
+    background:var(--themeMain);
     display:flex;
     gap:1rem;
     justify-content:space-between;
@@ -27,11 +26,16 @@ nav{
 nav > div{
     margin-bottom:0.3rem;
 }
+.offset{/*spacing needed so that stuff doesn't appear under the nav bar*/
+    height:2.5rem;
+}
 body{
-    background:var(--primary)
+    background:var(--themeBackground);
+    color:var(--themeText);
 }
 a{
     border-radius:0.3rem;
+    color:var(--themeText);
 }
 /**navLeft */
 #navLeft{
@@ -47,7 +51,7 @@ a{
     gap:3rem;
 }
 #navLeft a{
-    color:var(--text);
+    color:var(--themeNavText);
     padding: auto;
     width:7rem;
     height:80%;
@@ -63,8 +67,8 @@ a{
 }
 #navLeft a:hover{
     color:white;
-    background-color:var(--themeOrg);
-    border-bottom-color:var(--themePur);
+    background-color:var(--themeIndent);
+    border-bottom-color:var(--themeHover);
 }
 /**navRight */
 #navRight{
@@ -93,6 +97,12 @@ a{
     align-items:center;
     justify-content:center;
 }
+#navRight > div, a{
+    height:80%
+}
+#navRight > div > a{
+    height:100%;
+}
 
 /* login stuffs */
 #navRight > form{
@@ -102,6 +112,7 @@ a{
     width:80%;
     flex-grow:2;
     display:flex;
+    
     flex-direction:row;
     justify-content:space-between;
     align-content:center;
@@ -110,7 +121,7 @@ a{
 
     
     border-radius:0.3rem;
-    background-color:var(--themeOrg);
+    background-color:var(--themeIndent);
     border-bottom:solid white 0.3rem;
 }
 #navRight form input{
@@ -119,13 +130,21 @@ a{
     border-radius:0.3rem;
 }
 #login{
-    margin-top:0.4rem;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 65%;
+    background-color:var(--themeIndent);
+    padding:1rem;
+    border-radius:0.3rem;
 }
 #reg:hover{
     background-color:var(--themeGre);
 }
 #log:hover{
-    background-color:var(--themePur);
+    display:relative;
+    background-color:var(--themeHover);
+    height:100%;
 }
 
 /**error alert thingy */
@@ -173,7 +192,7 @@ a{
     justify-content:space-around;
     align-content:center;
     flex-direction:row;
-    background-color:var(--theme);
+    background-color:var(--themeMain);
 
     height:10rem;
     top:3rem;
@@ -182,6 +201,8 @@ a{
 }
 .themeSelect{
     border-radius:50%;
+    border:white solid;
+    background-color: red;
     width:2rem;
     height:2rem;
     cursor:pointer;
@@ -196,10 +217,10 @@ a{
     height:2rem;
     border-radius:50%;
 }
-#darkmode{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(59, 59, 59) 50%)}
-#whitemode{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(250, 247, 240) 50%)}
-#bluemode{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(250, 247, 240) 50%)}
-#darkblue{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(59, 59, 59) 50%)}
+#orangeLight{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(250, 247, 240) 50%)}
+#orangeDark{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(59, 59, 59) 50%)}
+#blueLight{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(250, 247, 240) 50%)}
+#blueDark{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(59, 59, 59) 50%)}
 
 /**logged in stuffs  I HATE CSS*/
 #nameplate{
@@ -246,7 +267,7 @@ a{
 #hidemenu{
     display:none;
     height:20rem;
-    background:var(--themeOrg);
+    background:var(--themeIndent);
 }
 #userstuff{
     display:flex;
@@ -255,7 +276,7 @@ a{
     
     height:52%;
     width:100%;
-    background:var(--themeOrg);
+    background:var(--themeIndent);
 }
 #usrinfo{
     height:100%;
@@ -269,7 +290,7 @@ a{
 }
 #logout{
     margin-top:1rem;
-    background-color:var(--theme);
+    background-color:var(--themeMain);
     border-radius:2rem;
     color:white;
     width:80%;
@@ -280,7 +301,7 @@ a{
     border: 0.1rem solid white;
 }
 #logout:hover{
-    background-color:var(--themeOrg);
+    background-color:var(--themeIndent);
 }
 #usrimage{/**image */
     position:absolute;
@@ -330,3 +351,165 @@ a{
     justify-content:space-around;
     gap: 1rem 1rem;
 }
+
+
+
+/*search stuff*/
+#searchForm{
+    position:relative;
+    margin:2rem;
+}
+#search{/*search bar*/
+    width:50%;
+    height:10%;
+}
+#searchSubmit{
+
+}
+/*tag stuffs*/
+#tagLister{
+    display:flex;
+    gap:1rem;
+    flex-direction:row;
+    flex-wrap:wrap;
+    background:var(--themeIndent);
+    width:50rem;
+    height:10rem;
+    padding:1rem;
+    margin-top:2rem;
+}
+.tag{/*the tag <a> element containing the tag name and tag Desc*/
+    width:5rem;
+    height:2rem;
+    padding:1rem, 1rem, 1rem, 1rem;
+    flex-basis:auto;
+    background-color:red;
+    padding:auto;
+    display:flex;
+    align-items: center;
+    position:relative;
+}
+.tagName{
+    display:flex;
+    background:red;
+    width:5rem;
+    height:2rem;
+    text-align:center;
+    align-items:center;
+    padding-top:1%;
+    background:var(--themeMain);
+    cursor:pointer;
+    line-height:100%;
+}
+.tagDesc{
+    position:absolute;
+    z-index: 1;
+    top:100%;
+    background-color:var(--themeIndent);
+    padding:1rem;
+    min-height:2rem;
+    max-height:10rem;
+    min-width:5rem;
+    max-width:10rem;
+    border-radius:0.3rem;
+    background:red;
+    visibility:hidden;
+}
+.tag:hover .tagDesc{
+    visibility:visible;
+}
+.tagYes{
+    background:rgb(178, 233, 153);
+    border:rgb(101, 228, 85) solid;
+}
+.tagNo{
+    background:rgb(255, 192, 192);
+    border:rgb(255, 112, 112) solid;
+}
+
+
+#tagJoinList{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:1rem;
+}
+.tagJoin{
+    position:relative;
+}
+.tagJoin:hover .tagDesc{
+    visibility:visible;
+}
+
+/* tag delete button*/
+#subDelTag{
+    width:4rem;
+}
+
+
+#listedImages{
+    max-width:96%;
+    margin:2% 2% 0% 2%;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1rem;
+    background:green;
+}
+.imageObject{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;
+    max-width:20rem;
+    max-height:20rem;
+    background:red;
+    border:var(--themeText) solid 1px;
+}
+.imageView{
+    max-width:19rem;
+    max-height:20rem;
+}
+
+
+/*add image form stuff*/
+#addImgForm{
+    margin:2rem;
+}
+#addImage{}
+#imgText{}
+#imgFile{}
+
+/* users.php page stuff */
+.userList{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:1rem 1rem;
+    padding:1rem;
+}
+.userLink{
+    display:flex;
+    flex-direction:row;
+    background:red;
+    width:20rem;
+    height:10rem;
+    border-radius:25px;
+    overflow:hidden;
+}
+.userInfo{
+    width:10rem;
+    padding:1rem;
+}
+.userName{
+    font-size:1.5rem;
+}
+.userCreation{
+
+}
+.userImage{
+    max-width:100%;
+    max-height:100%;
+}
+

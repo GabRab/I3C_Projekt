@@ -216,11 +216,12 @@ function listImages($db, $search=null, $tags=null){//works, just needs css on th
             array_push($bindValues, $tag);
         }
     }
+/* just some debug stuff
     echo "<br><br>";
     var_dump($bindTypes);
     var_dump($bindValues);
     echo"<br>".$statement;
-
+*/
     $stmt = new Stmt($db, $statement);
     $stmt->bind($bindTypes, $bindValues);//search according to title (kinda useless with images tho)
     $stmt->exe();
@@ -420,7 +421,7 @@ function joinAllTags($db, $tags){//join all tags (gets imgId)
     $stmt->bind("i", $_SESSION["user"]["userId"]);
     $stmt->exe();
     $imgId = $stmt->fetch()[0]["imgId"];//mysqli_fetch_all pust everything into an associative array, if it fetches only one thing it still ends up in an array.
-    foreach ($tags as $tag) {
+    if (isset($tags)) foreach ($tags as $tag) {
         joinTag($db, $imgId, $tag);
     }
 }

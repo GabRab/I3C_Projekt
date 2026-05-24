@@ -23,7 +23,7 @@ if (isset($_SESSION["user"])){
     }
 }
 ?>
-<div id="tags">
+<div id="tagLister">
 <?php
 $tags = listTags($db);
 foreach($tags as $tag){
@@ -44,7 +44,7 @@ foreach($tags as $tag){
 -->
         <form action="" method="POST">
             <input type="hidden" value="<?=$tag["tagId"]?>" name="tagDelId">
-            <input type="submit" value="delete tag" name="subDelTag">
+            <input type="submit" value="delete tag" name="subDelTag" class="subDelTag">
         </form>
     <?php }//It's ugly, but the amount of lines is driving me nuts! ?>
     

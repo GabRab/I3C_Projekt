@@ -12,12 +12,12 @@ if (isset($_POST["logout"])){
 if (isset($_FILES["userImage"])) changeImage($db, $_FILES["userImage"]);//change image function here
 if (isset($_POST["delUser"])) delUser($db, $_POST["delUser"]["userId"], $_POST["delUser"]["images"]);
 
-var_dump($_SERVER);
+//var_dump($_SERVER);
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projkov</title>
@@ -25,38 +25,37 @@ var_dump($_SERVER);
     <link rel="stylesheet" href="block/header.css">
 </head>
 <body>
-    <br>
-    <br>
-    <br>
-    <br>
     <nav>
         <div id="navLeft"><!--fill in hrefs when necessary, text is also changeable-->
             <a href="index.php">images</a><!--search and display images-->
             <a href="users.php">users</a><!--search for users-->
             <a href="tags.php">tags</a><!--edit tags individually-->
         </div>
+
         <div id="navRight">
             
-            <?php
+        <?php
         if (!isset($_SESSION["user"])){//if not logged in, show register and login buttons
         ?>
 
-            <form id="login"style="display:none"method="POST">
-                <input class="logForm" name="username" id="nameLog" type="text" placeholder="username">
-                <input class="logForm" name="password" id="passLog" type="text" placeholder="password"> 
-                <input style="display:none"type="submit" name="submitLog"> 
-            </form>
-            <a id="log" href="#">login</a>
+            <div id="loginDiv"> 
+                <a id="log" href="#">login</a>
+                <form id="login"style="display:none"method="POST"><!-- ATTENTION:make this a dropdown thingy-->
+                    <input class="logForm" name="username" id="loginName" type="text" placeholder="username" value="">
+                    <input class="logForm" name="password" id="loginPass" type="text" placeholder="password" value=""> 
+                    <input type="submit" name="submitLog" id="loginSubmit" value="login"> 
+                </form>
+            </div>
 
             <a id="reg" href="reg.php">register</a>
 
             <div id="settings"><!--settings here-->
-                <div id="setButton"><div class="inset themeSelect"></div></div>
+                <div id="setButton"><div class="inset"></div></div>
                 <div id="themes">
-                    <div id="whitemode" class="themeSelect"><div class="inset "></div></div>
-                    <div id="darkmode" class="themeSelect"><div class="inset "></div></div>
-                    <div id="bluemode" class="themeSelect"><div class="inset "></div></div>
-                    <div id="darkblue" class="themeSelect"><div class="inset "></div></div>
+                    <div id="orangeLight" class="themeSelect"><div class="inset "></div></div>
+                    <div id="orangeDark" class="themeSelect"><div class="inset "></div></div>
+                    <div id="blueLight" class="themeSelect"><div class="inset "></div></div>
+                    <div id="blueDark" class="themeSelect"><div class="inset "></div></div>
                 </div>
             </div>
             
@@ -87,180 +86,156 @@ var_dump($_SERVER);
                     </div>
                     <div id="menuset">
                         <div id="thememenu">
-                            <div id="whitemode" class="themeSelect"><div class="inset themeSelect"></div></div>
-                            <div id="darkmode" class="themeSelect"><div class="inset themeSelect"></div></div>
-                            <div id="bluemode" class="themeSelect"><div class="inset themeSelect"></div></div>
-                            <div id="darkblue" class="themeSelect"><div class="inset themeSelect"></div></div>
+                            <div id="orangeLight" class="themeSelect"></div>
+                            <div id="orangeDark" class="themeSelect"></div>
+                            <div id="blueLight" class="themeSelect"></div>
+                            <div id="blueDark" class="themeSelect"></div>
                         </div>
                         </div>
                     </div>
                 </div>
-                <?php
+            </div>
+            <?php
             }
             ?>
-        </div>
     </nav>
 </body>
 <script>
-    $(document).ready(function(){
-        //logic for login button stuff
-        $("#log").click(()=>{
-            console.log("GOO")
-            if($("#regist").is(":visible")) $("#regist").toggle();
-            if(!$("#nameLog").val()&&!$("#passLog").val()){
-                $("#login").toggle();
+$(document).ready(function(){
+    
+    //logic for login button stuff
+    var tog = false;
+    $("#log").click(function(){
+        console.log("login js")
+        console.log($("#loginName").val());
+        //if login is out, check for values, if values then submit, if not then close login
+        if (tog){//if closed
+            tog=!tog;
+            $("#login").toggle();
+        }
+        else{
+            if($("#loginName").val()!==null && $("#loginPass").val()!==null){
+                $("#login").animate({
+                    height:'toggle'
+                });
             }
             else $("#login").submit();
-        })
-        /* rip 1 day of work
-        //logic for register button stuff
-        $("#reg").click(()=>{
-            console.log("REE");
-            if($("#login").is(":visible")) $("#login").toggle();
-            if(!$("#nameReg").val()&&!$("#passReg").val()&&!$("#passReg2").val()){
-                $("#regist").toggle();
-            }
-            else if ($("#passReg").val()===$("#passReg2").val()){
-                    $("#regist").submit();
-                }
-                else{
-                    $("#passReg").css("border", "red dashed 0.3rem");
-                    $("#passReg2").css("border", "red dotted 0.3rem");
-                }
-        })*/
-        //theme settings
-        let theme;
-        let name = 'theme=';
-        let decodedCookie = decodeURIComponent(document.cookie);//decode from cookies
-        let ca = decodedCookie.split(';');//break into arrays
-        for(let i = 0; i <ca.length; i++) {//loop through arrays and search for
-        let c = ca[i];
-
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+    })
+    
+
+    //theme settings
+    //themes variable with prepared values
+    var themes = {//did I just waste about 2 hours on reworking it just because it was ugly? yes... yes I did... oh no. 
+        orangeLight:{
+            themeMain: "rgb(230, 88, 32)",
+            themeBackground:"rgb(250, 247, 240)",
+            themeIndent: "rgb(209, 76, 23)",
+            themeHover: "rgb(142, 140, 216)",
+            themeGre: "rgb(100,200,100)",
+            themeText:"rgb(0, 0, 0)",
+            themeNavText:"rgb(255, 255, 255)"
+        },
+        orangeDark:{
+            themeMain: "rgb(230, 88, 32)",
+            themeBackground:"rgb(59, 59, 59)",
+            themeIndent: "rgb(209, 76, 23)",
+            themeHover: "rgb(142, 140, 216)",
+            themeGre: "rgb(100,200,100)",
+            themeText:"rgb(255,255,255)",
+            themeNavText:"rgb(255, 255, 255)"
+        },
+        blueLight:{
+            themeMain: "rgb(98, 117, 180)",
+            themeBackground:"rgb(250, 247, 240)",
+            themeIndent: "rgb(89, 102, 145)",
+            themeHover: "rgb(230, 88, 32)",
+            themeGre: "rgb(100,200,100)",
+            themeText:"rgb(0, 0, 0)",
+            themeNavText:"rgb(255, 255, 255)"
+        },
+        blueDark:{
+            themeMain: "rgb(98, 117, 180)",
+            themeBackground:"rgb(59, 59, 59)",
+            themeIndent: "rgb(89, 102, 145)",
+            themeHover: "rgb(230, 88, 32)",
+            themeGre: "rgb(100,200,100)",
+            themeText:"rgb(255, 255, 255)",
+            themeNavText:"rgb(255, 255, 255)"
+        }
+    }
+    let theme;//the theme extracted from cookies
+    let name = 'theme=';
+    let decodedCookie = decodeURIComponent(document.cookie);//decode from cookies
+    console.log(document.cookie)
+    let ca = decodedCookie.split(';');//break into arrays
+    for(let i = 0; i <ca.length; i++) {//loop through arrays and search for name
+        let c = ca[i];
+        c = c.trim();
+        if (c.indexOf(name) == 0) {//if string beginning at [0] is name
             console.log(c);
             theme =c.substring(name.length, c.length);
-            }
         }
-            
-        console.log(theme);
-
-        switch(theme){
-            case "white":{
-                    $(":root").animate("", "", ()=>{
-                    $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
-                    $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
-                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
-                    $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
-                    document.cookie = "theme=white";
-                });
-                break;
-            }
-            case "dark":{
-                $(":root").animate("", "", ()=>{
-                    $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
-                    $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
-                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
-                    $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
-                    document.cookie = "theme=dark";
-                });
-                break;
-            }
-            case "blue":{
-                    $(":root").animate("", "", ()=>{
-                    $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
-                    $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
-                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
-                    $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
-                    document.cookie = "theme=blue";
-                });
-                break;
-            }
-            case "bluedark":{
-                    $(":root").animate("", "", ()=>{
-                    $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
-                    $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
-                    $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
-                    $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
-                    document.cookie = "theme=bluedark";
-                });
-                break;
-            }
-
-        }
+    }
+    console.log(theme);
+    if (theme===undefined) theme="orangeLight"
+    //setting theme variables during a page load
+    var styles = $(":root").get(0).style;
+    styles.setProperty("--themeMain", themes[theme].themeMain);
+    styles.setProperty("--themeBackground", themes[theme].themeBackground);
+    styles.setProperty("--themeIndent", themes[theme].themeIndent);
+    styles.setProperty("--themeHover", themes[theme].themeHover);
+    styles.setProperty("--themeGre", themes[theme].themeGre);
+    styles.setProperty("--themeText", themes[theme].themeText);
+    styles.setProperty("--themeNavText", themes[theme].themeNavText);
+    document.cookie = "theme="+theme;//does setting it again do anything? I dunno. Am I still gonna do it? ye.
+    
+    $(".themeSelect").click(function(){
+        var chosen = $(this).attr("id");//chosen theme id, it could be other attribute but this one also changes the css
+        //console.log(chosen);
+        var styles = $(":root").get(0).style;
+        //console.log(themes[chosen]);
+        styles.setProperty("--themeMain", themes[chosen].themeMain);
+        styles.setProperty("--themeBackground", themes[chosen].themeBackground);
+        styles.setProperty("--themeIndent", themes[chosen].themeIndent);
+        styles.setProperty("--themeHover", themes[chosen].themeHover);
+        styles.setProperty("--themeGre", themes[chosen].themeGre);
+        styles.setProperty("--themeText", themes[chosen].themeText);
+        styles.setProperty("--themeNavText", themes[chosen].themeNavText);
+        document.cookie = "theme="+chosen;
+    })
 
 
-        $("#setButton").click(()=>{
-            console.log("SET");
-            $("#themes").toggle();
-            $("#themes").animate({
-                height:'10rem'
-            });
+    //bring out the themes select (looks bad, fix later)
+    $("#setButton").click(()=>{
+        console.log("SET");
+        $("#themes").toggle();
+        $("#themes").animate({
+            height:'10rem'
+        });
+    })
 
-        })
-        $("#whitemode").click(()=>{
-            console.log("white");
-                $(":root").animate("", "", ()=>{
-                $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
-                $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
-                $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
-                $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
-                document.cookie = "theme=white";
-            });
-        })
-        $("#darkmode").click(()=>{
-            console.log("dark");
-                $(":root").animate("", "", ()=>{
-                $(":root").get(0).style.setProperty("--theme", "rgb(230, 88, 32)");
-                $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
-                $(":root").get(0).style.setProperty("--themeOrg", "rgb(209, 76, 23)");
-                $(":root").get(0).style.setProperty("--themePur", "rgb(142, 140, 216)");
-                document.cookie = "theme=dark";
-            });
-        })
-        $("#bluemode").click(()=>{
-            console.log("blue");
-            $(":root").animate("", "", ()=>{
-                $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
-                $(":root").get(0).style.setProperty("--primary", "rgb(250, 247, 240)");
-                $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
-                $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
-                document.cookie = "theme=blue";
-            });
-        })
-        $("#darkblue").click(()=>{
-            console.log("bluedark");
-            $(":root").animate("", "", ()=>{
-                $(":root").get(0).style.setProperty("--theme", "rgb(98, 117, 180)");
-                $(":root").get(0).style.setProperty("--primary", "rgb(59, 59, 59)");
-                $(":root").get(0).style.setProperty("--themeOrg", "rgb(89, 102, 145)");
-                $(":root").get(0).style.setProperty("--themePur", "rgb(230, 88, 32)");
-                document.cookie = "theme=bluedark";
-            });
-        })
+    //bring out the user mini menu
+    $("#minimenu").click(()=>{
+        console.log("MIN")
+        $("#username").toggle();
+        $("#image").toggle();
+        $("#hidemenu").animate({
+            height:'toggle'
+        });
+    })
 
-        $("#minimenu").click(()=>{
-            console.log("MIN")
-            $("#username").toggle();
-            $("#image").toggle();
-            $("#hidemenu").animate({
-                height:'toggle'
-            });
-        })
-        $("#logout").click(()=>{//works
-            $("#lout").submit();
-            console.log("LOG");
-        })
+    //submits logout form(why is this here? probably some css bs)
+    $("#logout").click(()=>{//works
+        $("#lout").submit();
+        console.log("LOG");
+    })
 
-        //submit immediately after giving file... doesn't work for some reason ;-;
-        //I hate css ;-; I want to cry ;-;
-        $("#userImage").change(function(){
-            $("#imageForm").submit();
-        })
-        
-    });
-    </script>
-<?php
-var_dump($_FILES); echo"<br><br>"?>
+    //21.05.2026 I still want to cry, but no worries little one. It works.
+    $("#userImage").change(function(){
+        $("#imageForm").submit();
+    })
+    
+});
+</script>
+<p class="offset"></p>
