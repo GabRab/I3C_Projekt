@@ -124,5 +124,9 @@ gab{
          <li>removing images leftover from when the files weren't deleted with deletion in the database</li>
 </ul>
 <p>end of stuff added at 20.05. I might make a dedicated file for these logs later because I simply don't like the look of README.md right now.</p>
+<ul>
+23.05. - <li>css starting</li>
+24.05. - <li>more css and light changes to fix some stuff and remove unnecessary error messages</li>
+</ul>
 }
 </div>
