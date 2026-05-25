@@ -46,7 +46,7 @@ if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
     <?php
 }
 ?>
-        <h3><?=$user["name"]?></h3> 
+        <h3 id="profileName"><?=$user["name"]?></h3> 
         <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?> 
             <a href="#" id="changeUsername">change name</a>
             <form action="#" method="post" id="changeInputName" style="display:none">
@@ -68,15 +68,15 @@ if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
         } 
         else{ 
         ?>
-            <img src="<?=$user["userImage"]?>"> 
+            <img id="profileImg" src="<?=$user["userImage"]?>"> 
         <?php 
         } 
         ?>
 
-        <p><?=$user["userCreation"]?></p><!--date of user account creation-->
+        <p id="profileCreation"><?=$user["userCreation"]?></p><!--date of user account creation-->
         <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?>
             <form method="post" id="additionalUserInfo">
-                <p><?=$user["email"]?></p>
+                <p id="profileEmail"><?=$user["email"]?></p>
                 <a href="#" id="changeEmail">change Email</a><!--I could send confirmation emails, but that's a novelty that would get in the way of testing for now-->
                 <div id="changeInputEmail" style="display:none">
                     <input type="email" name="email" value="<?=$user["email"]?>">
@@ -95,12 +95,12 @@ if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
     <?php
 foreach($images as $image){
     ?>
-    <a href="image.php?imgId=<?=$image["imgId"]?>">
+    <a class="profileImages" href="image.php?imgId=<?=$image["imgId"]?>">
         <p class="imageTitle"><?=$image["title"]?></p>
         <p class="imageDate"><?=$image["dateAdded"]?></p>
-        <img class="imageFile" src="<?=$image["imgFile"]?>">
         <p class="views"><?=$image["views"]?></p>
-    </div><!-- ADD STATISTICS TO THIS AS WELL LATER WHEN THEY'RE ADDED-->
+        <img class="imageFile" src="<?=$image["imgFile"]?>">
+    </a><!-- ADD STATISTICS TO THIS AS WELL LATER WHEN THEY'RE ADDED-->
     <?php
 }
 ?>

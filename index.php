@@ -2,8 +2,8 @@
 include "block/header.phtml";
 
 if (isset($_POST["editImage"]["del"])) delImage($db, $_POST["editImage"]["imgId"], $_POST["editImage"]["prevImage"]);
-if (isset($_POST["addImage"])){
-    addImage($db, $_POST["imgText"], $_FILES["imgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
+if (isset($_POST["addImgSub"])){
+    addImage($db, $_POST["addImgText"], $_FILES["addImgFile"]);//tohle mi trvalo asi 2 hodiny rozpracovat... chyba byla ze misto $_FILES jsem mel $_FILE... chce se mi brecet 
     joinAllTags($db, (isset($_POST["tags"]["join"])?$_POST["tags"]["join"]:null));
 }
 //var_dump($_SESSION);
@@ -93,18 +93,20 @@ if (isset($_POST["addImage"])){
 if (isset($_SESSION["user"])){//form for adding images (should make a different page entirely to make adding images good)
         ?>
 <form id="addImgForm" method="post" enctype="multipart/form-data" action="#">
-    <input type="text" name="imgText" id="imgText" placeholder="image title here">
-    <input type="file" name="imgFile" id="imgFile">
-    <input type="submit" name="addImage" id="addImage">
+    <div id="addImgInputs">
+        <input type="text" name="addImgText" id="addImgText" placeholder="image title here">
+        <input type="file" name="addImgFile" id="addImgFile">
+        <input type="submit" name="addImgSub" id="addImgSub">
+    </div>
     <!-- What I need here: display a list of tags you can assign and add them to this div, similar to the tag search but for creating a picture. I can use -->
     <div id="tagJoinList">
     <?php
         foreach(listTags($db) as $tag){//apologies, I don't think Imma be able to just make tags when you type them in because that's too much work. You have the title for that too, so whatever.
             ?>
-            <div class="tagJoin">
-                <a href="#" class="tagName"><?=$tag["tagName"]?></a>
-                <a href="#" class="tagDesc"><?=$tag["tagDesc"]?></a>
-            </div>
+            <a class="tagJoin">
+                <div href="#" class="tagName"><?=$tag["tagName"]?></div>
+                <div href="#" class="tagDesc"><?=$tag["tagDesc"]?></div>
+            </a>
             <?php    
         }
             ?>

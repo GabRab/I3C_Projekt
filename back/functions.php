@@ -135,6 +135,8 @@ function changeImage($db, $image){//WORKS :D
 }
 
 function listUsers($db, $string="%"){//list according to searched string
+    if(isset($string)) $string="%".$string."%";
+    else $string="%";
     $stmt = new Stmt($db, "SELECT * FROM users WHERE name LIKE ?");
     $stmt->bind("s", $string);
     $stmt->exe();

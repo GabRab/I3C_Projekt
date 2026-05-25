@@ -1,9 +1,11 @@
 :root{
     --themeMain: rgb(230, 88, 32);          /* main theme variable */
     --themeBackground: rgb(250, 247, 240);   /* main background color */
-    --themeIndent: rgb(209, 76, 23);        /* when a button is pressed or other ways to emphasize an area */
+    --themeBackSecondary: rgb(202, 199, 192);
+    --themeIndent: rgb(189, 70, 23);        /* when a button is pressed or other ways to emphasize an area */
     --themeHover: rgb(142, 140, 216);       /* stuff like when hovering over buttons */
     --themeGre: rgb(100,200,100);           /* green used during login */
+    --themeRed: rgb(216, 64, 64);
     --themeText: rgb(0, 0, 0);           /* text color */
     --themeNavText: rgb(255,255,255);
 }
@@ -377,6 +379,7 @@ a{
     height:10rem;
     padding:1rem;
     margin-top:2rem;
+    overflow:scroll;
 }
 .tag{/*the tag <a> element containing the tag name and tag Desc*/
     width:5rem;
@@ -405,14 +408,13 @@ a{
     position:absolute;
     z-index: 1;
     top:100%;
-    background-color:var(--themeIndent);
-    padding:1rem;
-    min-height:2rem;
+    padding:0.5rem;
+    min-height:1rem;
     max-height:10rem;
-    min-width:5rem;
+    min-width:3rem;
     max-width:10rem;
     border-radius:0.3rem;
-    background:red;
+    background:var(--themeHover);
     visibility:hidden;
 }
 .tag:hover .tagDesc{
@@ -428,25 +430,73 @@ a{
 }
 
 
-#tagJoinList{
+
+/* tags.php*/
+#TagPage{
     display:flex;
+    gap:1rem;
     flex-direction:row;
     flex-wrap:wrap;
-    gap:1rem;
+    background:var(--themeIndent);
+    width:80%;
+    margin:2% 2% 0% 2%;
+    height:10rem;
+    padding:1rem;
+    margin-top:2rem;
 }
-.tagJoin{
+.Tag{
+    width:10rem;
+    height:3rem;
+    padding:1rem, 1rem, 1rem, 1rem;
+    flex-basis:auto;
+    background-color: var(--themeMain);
+    padding:auto;
+    display:flex;
+    align-items: center;
     position:relative;
+    border-radius:10px;
 }
-.tagJoin:hover .tagDesc{
+.TagName{
+    display:flex;
+    width:5rem;
+    height:2rem;
+    justify-content: center;
+    text-align:center;
+    align-items:center;
+    padding-top:1%;
+    cursor:pointer;
+    line-height:100%;
+}
+.TagDesc{
+    position:absolute;
+    z-index: 1;
+    top:110%;
+    background-color:var(--themeHover);
+    padding:1rem;
+    min-height:1rem;
+    max-height:10rem;
+    min-width:5rem;
+    max-width:10rem;
+    border-radius:0.3rem;
+    visibility:hidden;
+}
+.Tag:hover .TagDesc{
     visibility:visible;
 }
-
-/* tag delete button*/
-#subDelTag{
-    width:4rem;
+.TagDelForm{
+    background-color:var(--themeRed);
+    overflow:hidden;
+    width: 50%;
+    height:50%;
+}
+.TagDelSub{
+    width: 100%;
+    height:100%;
+    background:var(--themeRed);
+    color:var(--themeText);
 }
 
-
+/* index.php images */
 #listedImages{
     max-width:96%;
     margin:2% 2% 0% 2%;
@@ -475,11 +525,50 @@ a{
 
 /*add image form stuff*/
 #addImgForm{
+    padding:1rem;
     margin:2rem;
+    background:var(--themeIndent);
+    width:50%;
+    height:15rem;
+    display:flex;
+    flex-direction:column;
 }
-#addImage{}
-#imgText{}
-#imgFile{}
+#addImgInputs{
+    background:var(--themeMain);
+    padding:1rem;
+    display:flex;
+    flex:row nowrap;
+    justify-content:space-between
+}
+#addImgSub{
+    background-color:var(--themeGre);
+}
+#addImgText{
+    width:20rem;
+}
+#addImgFile{}/*this is the file input for the image... I don't know how to decorate it.*/
+
+#tagJoinList{
+    height:100%;
+    margin:1rem;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:1rem;
+    overflow:scroll;
+}
+.tagJoin{
+    height:2rem;
+    position:relative;
+    cursor:pointer;
+}
+.tagJoin:hover .tagDesc{
+    visibility:visible;
+}
+.tagJoinVal{/* the input that gets appended when you select a tag you want to join*/
+    width:3rem;
+    height:1px;
+}
 
 /* users.php page stuff */
 .userList{
@@ -492,7 +581,7 @@ a{
 .userLink{
     display:flex;
     flex-direction:row;
-    background:red;
+    background:var(--themeMain);
     width:20rem;
     height:10rem;
     border-radius:25px;
@@ -506,10 +595,56 @@ a{
     font-size:1.5rem;
 }
 .userCreation{
-
+    font-size:1rem;
 }
 .userImage{
     max-width:100%;
     max-height:100%;
+    background:var(--themeIndent)
 }
 
+
+
+/* profile.php*/
+
+#profileName{
+
+}
+#profileImg{
+
+}
+#profileCreation{
+
+}
+#profileEmail{
+
+}
+
+#imageSpace{
+    max-width:96%;
+    margin:2% 2% 0% 2%;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1rem;
+    align-items:start;
+}
+.profileImages{
+    max-width:30rem;
+    max-height:40rem;
+    background:var(--themeIndent)
+}
+.imageTitle{
+
+}
+.imageFile{
+    max-width:30rem;
+    max-height:30rem;
+}
+.imageDate{
+
+}
+.views{
+
+}

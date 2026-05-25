@@ -122,4 +122,5 @@
 
 //23.05.2026 messing with css, this is pain
 //24.05.2026 more css :(, also a few minor changes to prevent unnecessary error messages.
+//25.05.2026 added more css to tags.php, fixed up some on index.php and users.php, but there's still a bunch of work to do. Also changed up profile.php a bit, still not done but its 22:35 again... still not done :(
 ?>
