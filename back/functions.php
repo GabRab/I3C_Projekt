@@ -89,7 +89,7 @@ function login($db, $name, $pass){//WORKS :D
         echo "<div class='err'>ucet nenalezen</div>";
         return 0;
     };
-    var_dump($user);
+    //var_dump($user);
     if(!password_verify($pass, $user[0]["password"])){
         echo "<div class='err'>heslo je spatne</div>";
         return 0;
@@ -105,7 +105,7 @@ function register($db, $name, $pass){// WORKS although it could get changed to r
     $stmt->bind("s", $name);
     $stmt->exe();
     if(($user = $stmt->fetch())!==array()){
-        var_dump($user);
+        //var_dump($user);
         echo "<div class='err'>ucet s timto jmenem uz existuje</div>";
         return 0;
     };
@@ -125,7 +125,7 @@ function register($db, $name, $pass){// WORKS although it could get changed to r
 function changeImage($db, $image){//WORKS :D
     if (($imagePath = checkImg($image, "userImages"))!==null){
         $stmt = new Stmt($db, "UPDATE users SET userImage = ? WHERE userId = ?;"); 
-        var_dump($_SESSION);
+        //var_dump($_SESSION);
         echo "SSSSS";
         $stmt->bind("si", array($imagePath, $_SESSION["user"]["userId"]));
         $stmt->exe();
@@ -299,7 +299,7 @@ function editImage($db, $imgId, $title, $image, $prevImage, $newTags, $oldTags){
     //remove stuff that doesn't change
 
     if (($newTemp = array_values(array_diff($newTags, $oldTags)))!=null){//this leaves only added tags and activates if there's something to be done
-        echo"<br> ADDING TAGS";var_dump($newTemp);
+        //echo"<br> ADDING TAGS";var_dump($newTemp);
         //this is gonna need
 
         $stat="SELECT tagId FROM tags WHERE tagName IN(";
@@ -461,7 +461,6 @@ function createComment($db, $imgId, $text){
     $stmt = new Stmt($db, "INSERT INTO comments(userId, imgId, comText) VALUES (?, ?, ?)");
     $stmt->bind("iis", array($_SESSION["user"]["userId"], $imgId, $text));
     $stmt->exe();
-    header("Location: image.php?imgId=".$imgId);
 }
 function deleteComment($db, $comId){
     $stmt = new Stmt($db, "DELETE FROM comments WHERE comId = ?");
@@ -469,4 +468,51 @@ function deleteComment($db, $comId){
     $stmt->exe();
 }
 
+
+//3 php objekty potrebuju, takze asi udelam jeste tady neco... nic jinemo me nenapada.
+//tohle jenom usetri trochu mista na strankach, takze to bude o trochu prehlednejsi :D
+class Tags{
+    private $tags=[];
+    //these are so I can have multiple css prepared and still be able to use js
+    private $listId;//ids of the divs containing the tags
+    private $tagClass;//classes of the tags
+    private $href;//href of the <a> element the tagName and tagDesc are kept in
+    function __construct($tags, $listId="tagLister", $tagClass="tag", $href="index.php?search=&tags%5Byes%5D%5B%5D="){
+        //$this->tags=array();
+        foreach($tags as $tag){
+            array_push($this->tags, new Tag($tag));
+        }
+        $this->tagClass=$tagClass;
+        $this->listId=$listId;
+        $this->href=$href;
+    }
+
+    function __toString(){
+        $str="<div id=".$this->listId.">";
+        //this is so ugly ;-;
+        //I could've just used a true/false, but whatever
+        if($this->href!="#")foreach($this->tags as $tag) $str.="<a class='".$this->tagClass."' href='".$this->href.$tag->name."'>".$tag."</a>";
+        else foreach($this->tags as $tag) $str.="<a class='".$this->tagClass."' href='".$this->href."'>".$tag."</a>";
+        $str.="</div>";
+        return $str;
+    }
+}
+class Tag{
+    private $id;
+    private $name;
+    private $desc;
+    function __construct($tag){
+        $this->id=$tag["tagId"];
+        $this->name=$tag["tagName"];
+        $this->desc=$tag["tagDesc"];
+    }
+    function __get($attr){
+        return $this->$attr;
+    }
+    //fills in tag information
+    function __toString(){
+        return "<div class='tagName'>".$this->name."</div>
+            <div class='tagDesc'>".$this->desc."</div>";
+    }
+}
 ?>

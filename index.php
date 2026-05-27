@@ -10,10 +10,10 @@ if (isset($_POST["addImgSub"])){
 ?>
 
 <form method="GET" action='#' id="searchForm">
-    <input placeholder="search for titles here" type="text" name="search" id="search" value='<?=(isset($_GET["search"]))?$_GET["search"]:null?>'>
+    <input placeholder="search with titles here" type="text" name="search" id="search" value='<?=(isset($_GET["search"]))?$_GET["search"]:null?>'>
     <input id="searchSubmit" type="submit" value="search">
     <div id="tagInput">
-<?php
+<?php //this is stuff for keeping search settings after searching
     if (isset($_GET["tags"])){
         if (isset($_GET["tags"]["yes"]))foreach($_GET["tags"]["yes"] as $tagy){
             ?>
@@ -26,26 +26,11 @@ if (isset($_POST["addImgSub"])){
             <?php
         }
     }
-?>
+    ?>
+</div>
 
-    </div>
-    <!--<input type="hidden" name="tagInput" id="tagInput" value="">-->
-    <div id="tagLister"><!-- this one just holds the listed tags-->
-        <?php
-        foreach(listTags($db) as $tag){
-        ?>
-        <a href="#" class="tag">
-            <div class="tagName"><?=$tag["tagName"]?></div>
-            <div class="tagDesc"><?=$tag["tagDesc"]?></div>
-        </a>
-        <?php
-        
-        }
-        ?>
+<?php echo new Tags(listTags($db), "tagLister", "tag", "#");?>
 
-    </div>
-    
-<!--I also need to display tags here...-->
 </form>
 <script>
     //if you click on a tag button, it gets added to the 'tags' input and added to a div of selected tags
@@ -92,25 +77,16 @@ if (isset($_POST["addImgSub"])){
 
 if (isset($_SESSION["user"])){//form for adding images (should make a different page entirely to make adding images good)
         ?>
-<form id="addImgForm" method="post" enctype="multipart/form-data" action="#">
+        <a href="#" id="openAddImg">add image</a>
+<form style="display:none" id="addImgForm" method="post" enctype="multipart/form-data" action="#">
     <div id="addImgInputs">
         <input type="text" name="addImgText" id="addImgText" placeholder="image title here">
         <input type="file" name="addImgFile" id="addImgFile">
-        <input type="submit" name="addImgSub" id="addImgSub">
+        <input type="submit" name="addImgSub" id="addImgSub" value="add Image">
     </div>
-    <!-- What I need here: display a list of tags you can assign and add them to this div, similar to the tag search but for creating a picture. I can use -->
-    <div id="tagJoinList">
-    <?php
-        foreach(listTags($db) as $tag){//apologies, I don't think Imma be able to just make tags when you type them in because that's too much work. You have the title for that too, so whatever.
-            ?>
-            <a class="tagJoin">
-                <div href="#" class="tagName"><?=$tag["tagName"]?></div>
-                <div href="#" class="tagDesc"><?=$tag["tagDesc"]?></div>
-            </a>
-            <?php    
-        }
-            ?>
-    </div>
+    
+    <?php echo new Tags(listTags($db), "tagJoinList", "tagJoin", "#"); ?>
+
 </form>
 <script>
     //I originally had an input be here all the time and only change the name of the input, but after a few seconds of consideration I decided that this slows it down very much since you still send the inputs even if they don't have a name
@@ -125,6 +101,9 @@ if (isset($_SESSION["user"])){//form for adding images (should make a different 
                 $(this).append("<input class='tagJoinVal tagYes' value='"+tag+"' name='tags[join][]'></input>");
                 console.log("joining tag "+tag);
             }
+    })
+    $(document).ready(function(){
+        $("#openAddImg").click(function(){$("#addImgForm").toggle();});
     })
 </script>
 <?php

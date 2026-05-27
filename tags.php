@@ -14,10 +14,11 @@ if (isset($_SESSION["user"])){
     if ($_SESSION["user"]["privileges"]>0){//a user has to add an email to his account to change tags. This doesn't stop trolls, but it at least deters bots.
     //this is mainly because tags are annoying to make, so you might at least give it to the community to do.
     ?>
-    <form action="" method="POST" id="addTag">
-        <input placeholder="tag name" type="text" name="tagName" id="addTagName">
-        <input placeholder="tag description"type="text" name="tagDesc" id="addTagDesc">
-        <input type="submit" value="add tag" name="subAddTag" id="addTagSub">
+    <form action="" method="POST" id="TagAddForm">
+        <div>create tag</div>
+        <input placeholder="tag name" type="text" name="tagName" id="TagAddName">
+        <input placeholder="tag description"type="text" name="tagDesc" id="TagAddDesc">
+        <input type="submit" value="add tag" name="subAddTag" id="TagAddSub">
     </form>
         <?php
     }

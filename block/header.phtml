@@ -71,27 +71,25 @@ if (isset($_POST["delUser"])) delUser($db, $_POST["delUser"]["userId"], $_POST["
                 <div id="hidemenu">
                     <div id="userstuff">
                         <div id="usrinfo">
-                            info here
+                            <h3><?=$_SESSION["user"]["name"]?></h3>
                             <button id="logout">Log out</button>
                             <form method="post" style="display:none" name="lout" id="lout" > <input type="hidden" name="logout" value="OUT"> </form>
                         </div>
 
-                        <div id="usrimg">
                             <form method="post" id="imageForm" name="imageForm" enctype="multipart/form-data">
                                 <img id="usrimage" src=<?="'".$_SESSION["user"]["userImage"]."'"?> alt="user image">
                                 <label for="userImage"></label>
                                 <input accept="image/" type="file" name="userImage" id="userImage">
                             </form>
-                        </div>
                     </div>
-                    <div id="menuset">
+                    
                         <div id="thememenu">
                             <div id="orangeLight" class="themeSelect"></div>
                             <div id="orangeDark" class="themeSelect"></div>
                             <div id="blueLight" class="themeSelect"></div>
                             <div id="blueDark" class="themeSelect"></div>
                         </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

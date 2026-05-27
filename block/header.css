@@ -32,6 +32,7 @@ nav > div{
     height:2.5rem;
 }
 body{
+    margin:0% 2% 0% 2%;
     background:var(--themeBackground);
     color:var(--themeText);
 }
@@ -82,8 +83,6 @@ a{
     flex-grow:1;
     padding-right:4rem;
     height:100%;
-    padding-top:0.4rem;
-    padding-bottom:0.3rem;
 
     gap:3rem;
 }
@@ -98,9 +97,6 @@ a{
     display:flex;
     align-items:center;
     justify-content:center;
-}
-#navRight > div, a{
-    height:80%
 }
 #navRight > div > a{
     height:100%;
@@ -228,13 +224,11 @@ a{
 #nameplate{
     width:20rem;  
     height:100%;
-    display:block;
-    background:yellow;
 }
 #minimenu{
     margin-top:0.2rem;
     cursor:pointer;
-    background:green;
+    background:var(--themeIndent);
     height:100%;
     border-radius:2rem;
     display:flex;
@@ -249,7 +243,7 @@ a{
     text-align:center;
     vertical-align:middle;
     color:white;
-    background:red;
+    background:var(--themeMain);
     height:100%;
 }
 #minimenu > div{
@@ -268,15 +262,18 @@ a{
 }
 #hidemenu{
     display:none;
-    height:20rem;
+    height:15rem;
     background:var(--themeIndent);
+    z-index: 1;
+    border-radius: 0 0 2rem 2rem;
+    overflow: hidden;
 }
 #userstuff{
     display:flex;
     flex-direction:row;
     justify-content:space-between;
     
-    height:52%;
+    height:10rem;
     width:100%;
     background:var(--themeIndent);
 }
@@ -310,22 +307,15 @@ a{
     width:10rem;
     height:10rem;
     border-radius:50%;
-    background-color:green;
+    background-color:var(--themeBackground);
     visibility:visible;
     margin: 0 0 0 0;
-}
-#usrimg{/**div parent */
-    height:100%;
-    width:50%;
-    background-color:yellow;
 }
 #imageForm{
     top:-10rem;
     margin-top:0rem;
     height:100%;
-    width:100%;
-    
-    background:purple;
+    width:60%;
 }
 #imageForm label{
     visibility:visible;
@@ -339,15 +329,10 @@ a{
 #imageForm input{/**input */
     display:none;
 }
-#menuset{
-    height:50%;
-    background:blue;
-}
 #thememenu{
-    background:red;
     display:flex;
     flex-direction:row;
-    height:100%;
+    height:5rem;
     justify-items:center;
     align-items:center;
     justify-content:space-around;
@@ -360,6 +345,7 @@ a{
 #searchForm{
     position:relative;
     margin:2rem;
+    max-width:50%;
 }
 #search{/*search bar*/
     width:50%;
@@ -391,11 +377,12 @@ a{
     display:flex;
     align-items: center;
     position:relative;
+    border-radius: 10px;
 }
 .tagName{
     display:flex;
     background:red;
-    width:5rem;
+    min-width:5rem;
     height:2rem;
     text-align:center;
     align-items:center;
@@ -404,14 +391,16 @@ a{
     cursor:pointer;
     line-height:100%;
 }
-.tagDesc{
+/* PROBLEM: max-height and max-width don't work, the values just stay at min ALWAYS */
+.tagDesc{/* I hate css so much, why doesn't max-height nor min-height work here*/
+    display:block;
     position:absolute;
     z-index: 1;
     top:100%;
     padding:0.5rem;
     min-height:1rem;
     max-height:10rem;
-    min-width:3rem;
+    min-width:4rem;
     max-width:10rem;
     border-radius:0.3rem;
     background:var(--themeHover);
@@ -495,6 +484,23 @@ a{
     background:var(--themeRed);
     color:var(--themeText);
 }
+#TagAddForm{
+    background:var(--themeIndent);
+    margin:1rem 2rem 1rem 2rem;
+    width:40rem;
+    padding:1rem;
+    display:flex;
+    justify-content:space-around;
+}
+#TagAddName{
+
+}
+#TagAddDesc{
+
+}
+#TagAddSub{
+
+}
 
 /* index.php images */
 #listedImages{
@@ -505,7 +511,6 @@ a{
     align-items:center;
     flex-wrap:wrap;
     gap:1rem;
-    background:green;
 }
 .imageObject{
     display:flex;
@@ -514,7 +519,6 @@ a{
     justify-content: center;
     max-width:20rem;
     max-height:20rem;
-    background:red;
     border:var(--themeText) solid 1px;
 }
 .imageView{
@@ -524,6 +528,10 @@ a{
 
 
 /*add image form stuff*/
+#openAddImg{
+    padding:1rem;
+    background:var(--themeMain);
+}
 #addImgForm{
     padding:1rem;
     margin:2rem;
@@ -571,6 +579,9 @@ a{
 }
 
 /* users.php page stuff */
+#searchUsers{
+    padding:1rem 2rem 1rem 2rem;
+}
 .userList{
     display:flex;
     flex-direction:row;
@@ -607,40 +618,56 @@ a{
 
 /* profile.php*/
 
-#profileName{
-
+#profileSpace{
+    width:70%;
+    padding:0 10% 0 10%;
+    margin:2% 5% 0 5%;
+    background:var(--themeMain);
+    display:flex;
+    justify-content: space-between;
 }
-#profileImg{
-
+#profileInfo{
+    padding:2rem 2rem 2rem 2rem;
+}
+#profileName{
+    color:var(--themeNavText);
+    
+}
+#profileImg{/* user image of user*/
+    background:var(--themeIndent);
+    border-radius:5rem;
 }
 #profileCreation{
-
+    
 }
 #profileEmail{
-
+    
 }
 
 #imageSpace{
     max-width:96%;
-    margin:2% 2% 0% 2%;
+    margin:2% 5% 0% 5%;
     display:flex;
     flex-direction:row;
     align-items:center;
+    justify-content: space-between;
     flex-wrap:wrap;
     gap:1rem;
     align-items:start;
 }
-.profileImages{
-    max-width:30rem;
-    max-height:40rem;
-    background:var(--themeIndent)
+.profileImage{/* images added by user */
+    border:var(--themeText) solid 1px;
+    width:22%;
+    height:10%;
+    background:var(--themeMain)
 }
 .imageTitle{
-
+    color:var(--themeNavText);
 }
 .imageFile{
-    max-width:30rem;
+    width:100%;
     max-height:30rem;
+    background:var(--themeIndent);
 }
 .imageDate{
 
@@ -648,3 +675,112 @@ a{
 .views{
 
 }
+
+/* image.php image*/
+#Image{/* div containing image*/
+}
+#ImageInfo{/* text info about image*/
+
+}
+#ImageTags{/* current tags of the image*/
+    display:flex;
+    flex:wrap row;
+    padding:1rem;
+    gap:1rem;
+}
+#ImageTitle{
+
+}
+#ImageDate{
+
+}
+#ImageUser{
+
+}
+#ImageImage{/* div containing ImageFile*/
+
+}
+#ImageFile{
+
+}
+/* image.php edit image form stuff*/
+#openEdit{
+    padding:1rem;
+    background:var(--themeMain);
+}
+#ImageEditStuff{
+    display:none;
+    background:var(--themeMain);
+    padding:2rem 2rem 2rem 2rem;
+    margin:2% 2% 2% 2%;
+    border-radius:25px;
+}
+#ImageEditForm{
+    background:var(--themeIndent);
+}
+#ImageEditText{
+
+}
+#ImageEditFile{
+
+}
+#ImageEditTagStuff{
+
+}
+#ImageTagJoinInput{/* list of tags decided to be joined(tagYes)*/
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:row;
+    height:5rem;
+    width:30rem;
+    gap:1rem;
+    padding:1rem;
+}
+#ImageTagList{/* list of tags not decided to be joined(tagNo)*/
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:row;
+    height:10rem;
+    width:30rem;
+    gap:1rem;
+    padding:1rem;
+}
+#ImageDelForm{}
+#ImageEditDel{}
+
+/* image.php comments*/
+#ImageComments{
+    margin:2% 2% 2% 2%;
+}
+.ImageComment{
+
+}
+.commentInfo{
+    display:flex;
+    flex-direction: row;
+    gap:5rem;
+}
+.ImageCommentDelForm{
+
+}
+.ImageCommentDelSub{
+
+}
+.commentUsername{
+
+}
+.commentDate{
+
+}
+.commentText{
+
+}
+
+
+
+
+
+
+/* why is this all in one file? Because I don't make good decisions in life*/
+/* benefits of putting this into different files: easier to work with(stuff doesn't interfere with eachother, no more problems with coming up with id names, etc.)*/
+/* cons: having more files, doing more work*/

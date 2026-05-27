@@ -6,9 +6,9 @@ require "block/header.phtml";
 if (isset($_GET["search"])) $users = listUsers($db, $_GET["search"]);
 else $users = listUsers($db);//sadly need to have this here because null still counts as a value
 ?>
-<form method="GET">
-    <input type="text" name="search" id="search">
-    <input type="submit">
+<form method="GET" id="searchUsers">
+    <input type="text" name="search" id="search" placeholder="search with username">
+    <input type="submit" value="search">
 </form>
 
 <div class="userList">
