@@ -32,17 +32,6 @@ else echo"<h1>CO TU DELAS PARCHANTE</h1>";//easter egg for those who want to mes
 //I need to add comment
 ?>
 <div id="profileSpace">
-<?php
-if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
-    ?>
-    <form action="index.php" method="post">
-        <input type="hidden" name="delUser[userId]" value="<?=$user["userId"]?>"><!--I know I could just have the id be in the submit input value, but that would mean that the submit text itself is the id :(-->
-        <input type="submit" value="delete user" name="delUser[Sub]">
-        <?php foreach($images as $image){ ?> <input type="hidden" name="delUser[images][]" value=<?=$image["imgFile"]?>> <?php } ?>
-    </form>
-    <?php
-}
-?>
     <div id="profileInfo">
         <h1 id="profileName"><?=$user["name"]?></h1> 
     <?php if ($user["userId"]===$_SESSION["user"]["userId"]){ ?> 
@@ -74,6 +63,17 @@ if ($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3){
             </form>
         <?php }//removed phone numbers, because they're too much and I don't know how to incentivize people to add them without making the UX too limited without them.
         ?>
+        <?php //checks if user is signed in(to avoid useless error messages), if user's privileges are higher than 2 and targeted user is less than 3.
+if (isset($_SESSION["user"])&&(($_SESSION["user"]["privileges"]>2 && $user["privileges"]<3)||($_SESSION["user"]["userId"]==$_user["userId"]))){
+    ?>
+    <form action="index.php" method="post">
+        <input type="hidden" name="delUser[userId]" value="<?=$user["userId"]?>"><!--I know I could just have the id be in the submit input value, but that would mean that the submit text itself is the id :(-->
+        <input type="submit" value="delete user" name="delUser[Sub]" id="profileEditDel">
+        <?php foreach($images as $image){ ?> <input type="hidden" name="delUser[images][]" value=<?=$image["imgFile"]?>> <?php } ?>
+    </form>
+    <?php
+}
+?>
     </div>
     <?php //userImg stuff
     if (isset($_SESSION["user"])&&$user["userId"]===$_SESSION["user"]["userId"]){ 

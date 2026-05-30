@@ -1,13 +1,12 @@
 :root{
     --themeMain: rgb(230, 88, 32);          /* main theme variable */
-    --themeBackground: rgb(250, 247, 240);   /* main background color */
-    --themeBackSecondary: rgb(202, 199, 192);
+    --themeBackground: rgb(59, 59, 59);   /* main background color */
     --themeIndent: rgb(189, 70, 23);        /* when a button is pressed or other ways to emphasize an area */
     --themeHover: rgb(142, 140, 216);       /* stuff like when hovering over buttons */
     --themeGre: rgb(100,200,100);           /* green used during login */
-    --themeRed: rgb(216, 64, 64);
-    --themeText: rgb(0, 0, 0);           /* text color */
-    --themeNavText: rgb(255,255,255);
+    --themeRed: rgb(216, 64, 64);           /* red  for deleting stuff I guess*/
+    --themeText: rgb(255,255,255);           /* text color */
+    --themeNavText: rgb(255,255,255);        /* navigation text*/
 }
 nav{/* why is there a margin that doesn't show up? I hate css*/
     position:absolute;
@@ -49,7 +48,6 @@ a{
     display:flex;
     flex-wrap:nowrap;
     flex-direction:row;
-    justify-content:flex-start;
     align-content:stretch;
     gap:3rem;
 }
@@ -103,25 +101,7 @@ a{
 }
 
 /* login stuffs */
-#navRight > form{
-    margin-top:1rem;
 
-    height:100%;
-    width:80%;
-    flex-grow:2;
-    display:flex;
-    
-    flex-direction:row;
-    justify-content:space-between;
-    align-content:center;
-    align-items:center;
-    grid-template-columns: auto auto auto;
-
-    
-    border-radius:0.3rem;
-    background-color:var(--themeIndent);
-    border-bottom:solid white 0.3rem;
-}
 #navRight form input{
     height:2rem;
     margin:0 0 0 0;
@@ -135,6 +115,22 @@ a{
     background-color:var(--themeIndent);
     padding:1rem;
     border-radius:0.3rem;
+
+    height:100%;
+    width:30rem;
+    flex-grow:2;
+    display:flex;
+    
+    flex-direction:row;
+    justify-content:space-between;
+    align-content:center;
+    align-items:center;
+    grid-template-columns: auto auto auto;
+
+    
+    border-radius:0.5rem;
+    background-color:var(--themeIndent);
+    border-bottom:solid white 0.3rem;
 }
 #reg:hover{
     background-color:var(--themeGre);
@@ -142,7 +138,7 @@ a{
 #log:hover{
     display:relative;
     background-color:var(--themeHover);
-    height:100%;
+    height:80%;
 }
 
 /**error alert thingy */
@@ -170,7 +166,7 @@ a{
 }
 #setButton{
     position:absolute;
-    margin:0.4rem 0 0 0;
+    margin:0 0 0 0;
     width:2rem;
     height:2rem;
     border-radius:50%;
@@ -180,16 +176,15 @@ a{
     align-content:center;
     flex-direction:column;
     cursor:pointer;
-
+    border:solid white 2px;
 }
 #themes{ 
     position:absolute;
     display:flex;
-    display:none;
     align-items:center;
-    justify-content:space-around;
+    justify-content:center;
     align-content:center;
-    flex-direction:row;
+    flex-direction:column;
     background-color:var(--themeMain);
 
     height:10rem;
@@ -209,12 +204,7 @@ a{
     justify-content:center;
     align-content:center;
 }
-.inset{
-    border:0.15rem solid white;
-    width:2rem;
-    height:2rem;
-    border-radius:50%;
-}
+
 #orangeLight{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(250, 247, 240) 50%)}
 #orangeDark{background-image: conic-gradient(rgb(230, 88, 32) 50%, rgb(59, 59, 59) 50%)}
 #blueLight{background-image: conic-gradient(rgb(98, 117, 180) 50%, rgb(250, 247, 240) 50%)}
@@ -254,7 +244,6 @@ a{
     height:100%;
 }
 #image{
-    background:blue;
     width:2rem;
     height:2rem;
     border-radius:50%;
@@ -366,6 +355,7 @@ a{
     padding:1rem;
     margin-top:2rem;
     overflow:scroll;
+    overflow-x:hidden;
 }
 .tag{/*the tag <a> element containing the tag name and tag Desc*/
     width:5rem;
@@ -393,7 +383,7 @@ a{
 }
 /* PROBLEM: max-height and max-width don't work, the values just stay at min ALWAYS */
 .tagDesc{/* I hate css so much, why doesn't max-height nor min-height work here*/
-    display:block;
+    display:inline-block;
     position:absolute;
     z-index: 1;
     top:100%;
@@ -564,6 +554,7 @@ a{
     flex-wrap:wrap;
     gap:1rem;
     overflow:scroll;
+    overflow-x:hidden;
 }
 .tagJoin{
     height:2rem;
@@ -620,7 +611,7 @@ a{
 
 #profileSpace{
     width:70%;
-    padding:0 10% 0 10%;
+    padding:1rem 10% 1rem 10%;
     margin:2% 5% 0 5%;
     background:var(--themeMain);
     display:flex;
@@ -636,6 +627,8 @@ a{
 #profileImg{/* user image of user*/
     background:var(--themeIndent);
     border-radius:5rem;
+    width: 32rem;
+    height:32rem;
 }
 #profileCreation{
     
@@ -643,7 +636,9 @@ a{
 #profileEmail{
     
 }
-
+#profileEditDel{
+    background:var(--themeRed);
+}
 #imageSpace{
     max-width:96%;
     margin:2% 5% 0% 5%;
@@ -735,6 +730,7 @@ a{
     width:30rem;
     gap:1rem;
     padding:1rem;
+    background:var(--themeGre);
 }
 #ImageTagList{/* list of tags not decided to be joined(tagNo)*/
     display:flex;
@@ -745,8 +741,11 @@ a{
     gap:1rem;
     padding:1rem;
 }
-#ImageDelForm{}
-#ImageEditDel{}
+#ImageDelForm{
+}
+#ImageEditDel{
+    background:var(--themeRed);
+}
 
 /* image.php comments*/
 #ImageComments{

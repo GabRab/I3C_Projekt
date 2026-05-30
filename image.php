@@ -56,7 +56,7 @@ image = {
 //var_dump($image);
 
 //LATER: ADD A BUTTON TO REVEAL THIS WITH JS (just a query to toggle the form, nothing hard tbh.)
-if (isset($_SESSION["user"])&&($_SESSION["user"]["userId"]===$image["info"]["userId"]||$_SESSION["user"]["privilege"]>1)){
+if (isset($_SESSION["user"])&&($_SESSION["user"]["userId"]===$image["info"]["userId"]||$_SESSION["user"]["privileges"]>1)){
 ?>
 <a href="#" id="openEdit">edit</a>
 <div id="ImageEditStuff">
@@ -76,7 +76,7 @@ if (isset($_SESSION["user"])&&($_SESSION["user"]["userId"]===$image["info"]["use
                 <?php
             }
             ?>
-            <div id="ImageTagJoinInput" style="background:green">
+            <div id="ImageTagJoinInput">
                 <?php
             foreach($image["tags"] as $tag){//these are the ones that actually change, add JS for it at some point later.
             ?>
@@ -89,7 +89,7 @@ if (isset($_SESSION["user"])&&($_SESSION["user"]["userId"]===$image["info"]["use
             }
             ?>
             </div>
-            <div id="ImageTagList" style="background:blue">
+            <div id="ImageTagList">
                 <?php
                 $tags = listTags($db);
                 
@@ -132,7 +132,7 @@ if (isset($_SESSION["user"])&&($_SESSION["user"]["userId"]===$image["info"]["use
         })
         </script>
 <?php
-} else if ($_SESSION["user"]["privilege"]>1){//reminder 0=user without email, 1=user with email, 2=moderator, 3=admin, 4=owner  Most of these are useless because they require more code to function
+} else if ($_SESSION["user"]["privileges"]>1){//reminder 0=user without email, 1=user with email, 2=moderator, 3=admin, 4=owner  Most of these are useless because they require more code to function
 //I wanted moderators to be only able to update images into "REMOVED DUE TO: bad" but that sounds like a bother.
 //user without email can only comment and add images (I would add a time limit but that also seems like a bother)
 //email user can add tags

@@ -38,24 +38,22 @@ if (isset($_POST["delUser"])) delUser($db, $_POST["delUser"]["userId"], $_POST["
         if (!isset($_SESSION["user"])){//if not logged in, show register and login buttons
         ?>
 
-            <div id="loginDiv"> 
                 <a id="log" href="#">login</a>
                 <form id="login"style="display:none"method="POST"><!-- ATTENTION:make this a dropdown thingy-->
                     <input class="logForm" name="username" id="loginName" type="text" placeholder="username" value="">
                     <input class="logForm" name="password" id="loginPass" type="text" placeholder="password" value=""> 
                     <input type="submit" name="submitLog" id="loginSubmit" value="login"> 
                 </form>
-            </div>
 
             <a id="reg" href="reg.php">register</a>
 
             <div id="settings"><!--settings here-->
-                <div id="setButton"><div class="inset"></div></div>
-                <div id="themes">
-                    <div id="orangeLight" class="themeSelect"><div class="inset "></div></div>
-                    <div id="orangeDark" class="themeSelect"><div class="inset "></div></div>
-                    <div id="blueLight" class="themeSelect"><div class="inset "></div></div>
-                    <div id="blueDark" class="themeSelect"><div class="inset "></div></div>
+                <div id="setButton"></div>
+                <div style="display:none" id="themes">
+                    <div id="orangeLight" class="themeSelect"></div>
+                    <div id="orangeDark" class="themeSelect"></div>
+                    <div id="blueLight" class="themeSelect"></div>
+                    <div id="blueDark" class="themeSelect"></div>
                 </div>
             </div>
             
