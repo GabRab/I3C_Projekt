@@ -3,6 +3,7 @@
 //This is kinda like an easter egg where it just doesn't even get used anywhere and even if you somehow manage to find it then nothing gets displayed for the user since its all comments.
 //anyways, here's some logs of what I did when. I'm not sure how accurate they are, but the dates at least say which days I worked on this.
 //THESE WERE ALL DONE BY GAB 
+//REMINDER: there are also a lot of comments documenting progress in their respective files. Please do check those as well
 //1.4. večer jsem začal pracovat na tomhle projektu, zatím jenom bojování s css a trochu rozpracování classy do php
 
 //2.4. celý den jsem pracoval na projektu do WEA, rozpracoval jsem přihlašování a přidal trochu css
